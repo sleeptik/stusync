@@ -1,7 +1,7 @@
 package com.stusyncteam.stusync.api.google
 
-import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.model.Event
+import com.google.api.services.calendar.model.Event.Reminders
 import com.google.api.services.calendar.model.EventDateTime
 import com.google.api.services.calendar.model.EventReminder
 import com.stusyncteam.stusync.api.modeus.models.Lesson
@@ -10,12 +10,12 @@ class LessonEventBuilder(private val lesson: Lesson) {
     val event: Event = Event()
 
     fun setDefaultReminders(): LessonEventBuilder {
-        val eventReminders = listOf(
+        val reminders = listOf(
             EventReminder().setMethod("popup").setMinutes(10),
             EventReminder().setMethod("popup").setMinutes(30)
         )
 
-        event.reminders.overrides = eventReminders
+        event.reminders = Reminders().setOverrides(reminders)
 
         return this;
     }
@@ -32,10 +32,8 @@ class LessonEventBuilder(private val lesson: Lesson) {
     }
 
     fun setDefaultDates(): LessonEventBuilder {
-        event.start = EventDateTime()
-            .setDateTime(DateTime.parseRfc3339(lesson.startDate.toStringRfc3339()))
-        event.end = EventDateTime()
-            .setDateTime(DateTime.parseRfc3339(lesson.endDate.toStringRfc3339()))
+        event.start = EventDateTime().setDateTime(lesson.startDate)
+        event.end = EventDateTime().setDateTime(lesson.endDate)
 
         return this
     }
