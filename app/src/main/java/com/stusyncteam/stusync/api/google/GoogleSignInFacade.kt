@@ -7,7 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class GoogleSignInFacade(private val context: Context) {
-    fun getSignedInAccount(): GoogleSignInAccount? {
+    fun getLastSignedInAccount(): GoogleSignInAccount? {
         return GoogleSignIn.getLastSignedInAccount(context)
     }
 

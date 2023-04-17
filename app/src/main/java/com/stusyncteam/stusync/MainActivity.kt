@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
 import com.stusyncteam.stusync.api.google.GoogleSignInFacade
 
 
@@ -22,23 +23,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == RESULT_OK)
-                account = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
-            else
-                Log.e("GoogleLogin", "Bad result code")
-
-            findViewById<TextView>(R.id.plain_text).text = account?.email ?: "null"
+            if (it.resultCode == RESULT_OK && it.data != null) {
+                try {
+                    account = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
+                } catch (e: ApiException) {
+                    Log.e("GoogleSignIn", "Couldn't sign in: ${e.message.toString()}")
+                }
+            }
         }
 
         val googleSignInButton = findViewById<SignInButton>(R.id.sign_in_button)
         googleSignInButton.setOnClickListener {
             val signInFacade = GoogleSignInFacade(this)
-            account = signInFacade.getSignedInAccount()
+            account = signInFacade.getLastSignedInAccount()
 
-            if (account != null)
-                return@setOnClickListener
+            if (account == null)
+                launcher.launch(signInFacade.getSignInIntent())
 
-            launcher.launch(signInFacade.getSignInIntent())
+            findViewById<TextView>(R.id.plain_text).text = account?.email ?: "null"
         }
     }
 }
