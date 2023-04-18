@@ -15,9 +15,11 @@ class LessonEventBuilder(private val lesson: Lesson) {
             EventReminder().setMethod("popup").setMinutes(30)
         )
 
-        event.reminders = Reminders().setOverrides(reminders)
+        event.reminders = Reminders()
+            .setUseDefault(false)
+            .setOverrides(reminders)
 
-        return this;
+        return this
     }
 
     fun setDefaultDescription(): LessonEventBuilder {
@@ -28,7 +30,7 @@ class LessonEventBuilder(private val lesson: Lesson) {
 
         event.description = description
 
-        return this;
+        return this
     }
 
     fun setDefaultDates(): LessonEventBuilder {
