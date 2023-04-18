@@ -17,6 +17,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.stusyncteam.stusync.api.google.CalendarFacadeFactory
 import com.stusyncteam.stusync.api.google.GoogleSignInFacade
 import com.stusyncteam.stusync.api.modeus.models.MockCollections
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
 
@@ -69,11 +70,16 @@ class MainActivity : AppCompatActivity() {
 
             val requests = calendar.prepareRequests(MockCollections.createLessons())
 
-            try {
-                lifecycleScope.launch { calendar.executeAll(requests) }
-            } catch (e: UserRecoverableAuthIOException) {
-                consentLauncher.launch(e.intent)
-                lifecycleScope.launch { calendar.executeAll(requests) }
+            lifecycleScope.launch(handleRequestExecutionWithAuth()) {
+                calendar.executeAll(requests)
+            }
+        }
+    }
+
+    private fun handleRequestExecutionWithAuth(): CoroutineExceptionHandler {
+        return CoroutineExceptionHandler { coroutineContext, throwable ->
+            if (throwable is UserRecoverableAuthIOException) {
+                consentLauncher.launch(throwable.intent)
             }
         }
     }
