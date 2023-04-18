@@ -3,10 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-def keystorePropertiesFile = rootProject.file("keystore.properties");
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
 android {
     namespace 'com.stusyncteam.stusync'
     compileSdk 33
@@ -39,6 +35,10 @@ android {
         resources.excludes.add("META-INF/*")
     }
 
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
     signingConfigs {
         debug {
             storeFile file(keystoreProperties['storeFile'])
@@ -59,8 +59,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
+
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
     implementation 'com.google.api-client:google-api-client:2.2.0'
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.34.1'
+    implementation 'com.google.api-client:google-api-client-android:2.2.0'
     implementation 'com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0'
 }
