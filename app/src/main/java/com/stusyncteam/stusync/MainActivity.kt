@@ -2,40 +2,61 @@ package com.stusyncteam.stusync
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.api.client.util.DateTime
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
+import com.stusyncteam.stusync.api.google.CalendarFacade
 import com.stusyncteam.stusync.api.google.CalendarFacadeFactory
 import com.stusyncteam.stusync.api.google.GoogleSignInFacade
-import com.stusyncteam.stusync.api.modeus.models.Lesson
-import java.util.Date
+import com.stusyncteam.stusync.api.modeus.models.MockCollections
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var launcher: ActivityResultLauncher<Intent>
+    private lateinit var calendar: CalendarFacade
     private var account: GoogleSignInAccount? = null
+
+    private var signInLauncher: ActivityResultLauncher<Intent>
+    private var consentLauncher: ActivityResultLauncher<Intent>
+
+    init {
+        signInLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK && it.data != null) {
+                try {
+                    account = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
+                } catch (e: ApiException) {
+                    Toast.makeText(this, "Couldn't get logged account", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+
+        consentLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode != RESULT_OK) {
+                Toast.makeText(this, "Consent was not given", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == RESULT_OK && it.data != null) {
-                try {
-                    account = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
-                } catch (e: ApiException) {
-                    Log.e("GoogleSignIn", "Couldn't sign in: ${e.message.toString()}")
-                }
-            }
-        }
+        calendar = CalendarFacadeFactory.createCalendarFacade(this)
 
         val googleSignInButton = findViewById<SignInButton>(R.id.sign_in_button)
         googleSignInButton.setOnClickListener {
@@ -43,25 +64,20 @@ class MainActivity : AppCompatActivity() {
             account = signInFacade.getLastSignedInAccount()
 
             if (account == null)
-                launcher.launch(signInFacade.getSignInIntent())
+                signInLauncher.launch(signInFacade.getSignInIntent())
 
             findViewById<TextView>(R.id.plain_text).text = account?.email ?: "null"
         }
 
         val testButton = findViewById<Button>(R.id.test_button).setOnClickListener {
-            val calendar = CalendarFacadeFactory.createUserCalendar(account?.id.toString())
+            val requests = calendar.prepareRequests(MockCollections.createLessons())
 
-            val start = DateTime(Date())
-
-            val date = Date()
-            date.time += 1000 * 60 * 60 * 2
-            val end = DateTime(date)
-
-            val lessons = listOf(
-                Lesson("test1", "class1", "building1", start, end)
-            )
-
-            calendar.transformLessonsAndUploadEvents(lessons)
+            try {
+                lifecycleScope.launch { calendar.executeAll(requests) }
+            } catch (e: UserRecoverableAuthIOException) {
+                consentLauncher.launch(e.intent)
+                lifecycleScope.launch { calendar.executeAll(requests) }
+            }
         }
     }
 }
