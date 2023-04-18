@@ -14,7 +14,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.stusyncteam.stusync.api.google.CalendarFacade
 import com.stusyncteam.stusync.api.google.CalendarFacadeFactory
 import com.stusyncteam.stusync.api.google.GoogleSignInFacade
 import com.stusyncteam.stusync.api.modeus.models.MockCollections
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var calendar: CalendarFacade
     private var account: GoogleSignInAccount? = null
 
     private var signInLauncher: ActivityResultLauncher<Intent>
@@ -56,10 +54,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        calendar = CalendarFacadeFactory.createCalendarFacade(this)
-
-        val googleSignInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        googleSignInButton.setOnClickListener {
+        findViewById<SignInButton>(R.id.sign_in_button).setOnClickListener {
             val signInFacade = GoogleSignInFacade(this)
             account = signInFacade.getLastSignedInAccount()
 
@@ -69,7 +64,9 @@ class MainActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.plain_text).text = account?.email ?: "null"
         }
 
-        val testButton = findViewById<Button>(R.id.test_button).setOnClickListener {
+        findViewById<Button>(R.id.test_button).setOnClickListener {
+            val calendar = CalendarFacadeFactory.createCalendarFacade(this)
+
             val requests = calendar.prepareRequests(MockCollections.createLessons())
 
             try {
