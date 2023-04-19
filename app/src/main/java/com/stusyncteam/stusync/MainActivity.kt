@@ -3,6 +3,7 @@ package com.stusyncteam.stusync
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -84,17 +85,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<SignInButton>(R.id.sign_in_button).setOnClickListener {
+        val testButton = findViewById<Button>(R.id.test_button)
+        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
+
+        signInButton.setOnClickListener {
             val signInFacade = GoogleSignInFacade(this)
             account = signInFacade.getLastSignedInAccount()
 
-            if (account == null)
+            if (account == null) {
                 signInLauncher.launch(signInFacade.getSignInIntent())
+            } else {
+                it.visibility = View.GONE
+                testButton.visibility = View.VISIBLE
+            }
 
             findViewById<TextView>(R.id.plain_text).text = account?.email ?: "null"
         }
 
-        findViewById<Button>(R.id.test_button).setOnClickListener {
+        testButton.setOnClickListener {
             openCalendarAndUploadLauncher.launch(arrayOf("text/calendar"))
         }
     }

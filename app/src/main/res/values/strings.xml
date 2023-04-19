@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">stusync</string>
+    <string name="test_button_text">Choose ICal and load to Google Calendar</string>
 </resources>
