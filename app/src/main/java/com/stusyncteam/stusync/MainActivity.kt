@@ -2,6 +2,7 @@ package com.stusyncteam.stusync
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -14,11 +15,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.stusyncteam.stusync.api.google.CalendarFacadeFactory
+import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
 import com.stusyncteam.stusync.api.google.GoogleSignInFacade
-import com.stusyncteam.stusync.api.modeus.models.MockCollections
+import com.stusyncteam.stusync.api.modeus.ical.ICalCalendarFacade
+import com.stusyncteam.stusync.api.modeus.models.Lesson
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import net.fortuna.ical4j.data.ParserException
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private var signInLauncher: ActivityResultLauncher<Intent>
     private var consentLauncher: ActivityResultLauncher<Intent>
+    private var openCalendarAndUploadLauncher: ActivityResultLauncher<Array<String>>
 
     init {
         signInLauncher = registerForActivityResult(
@@ -49,6 +53,31 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
         }
+
+        openCalendarAndUploadLauncher = registerForActivityResult(
+            ActivityResultContracts.OpenDocument()
+        ) {
+            if (it == null)
+                return@registerForActivityResult
+
+            var lessons: List<Lesson>
+
+            contentResolver.openInputStream(it)!!.use { stream ->
+                try {
+                    lessons = ICalCalendarFacade.fromStream(stream).getLessons()
+                } catch (e: ParserException) {
+                    Log.e("ICal", e.message.toString())
+                    return@registerForActivityResult
+                }
+            }
+
+            val calendar = GoogleCalendarFacade.fromContext(this)
+            val requests = calendar.prepareRequests(lessons)
+
+            lifecycleScope.launch(handleRequestExecutionWithAuth()) {
+                calendar.executeAll(requests)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,18 +95,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.test_button).setOnClickListener {
-            val calendar = CalendarFacadeFactory.createCalendarFacade(this)
-
-            val requests = calendar.prepareRequests(MockCollections.createLessons())
-
-            lifecycleScope.launch(handleRequestExecutionWithAuth()) {
-                calendar.executeAll(requests)
-            }
+            openCalendarAndUploadLauncher.launch(arrayOf("text/calendar"))
         }
     }
 
     private fun handleRequestExecutionWithAuth(): CoroutineExceptionHandler {
-        return CoroutineExceptionHandler { coroutineContext, throwable ->
+        return CoroutineExceptionHandler { _, throwable ->
             if (throwable is UserRecoverableAuthIOException) {
                 consentLauncher.launch(throwable.intent)
             }

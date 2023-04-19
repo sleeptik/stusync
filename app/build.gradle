@@ -61,6 +61,10 @@ dependencies {
 
     implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
 
+    implementation('org.mnode.ical4j:ical4j:3.2.11') {
+        exclude group: 'org.codehaus.groovy'
+    }
+
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
     implementation 'com.google.api-client:google-api-client:2.2.0'
     implementation 'com.google.api-client:google-api-client-android:2.2.0'
