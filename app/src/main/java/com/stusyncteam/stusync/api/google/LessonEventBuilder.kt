@@ -1,5 +1,6 @@
 package com.stusyncteam.stusync.api.google
 
+import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.Event.Reminders
 import com.google.api.services.calendar.model.EventDateTime
@@ -34,8 +35,8 @@ class LessonEventBuilder(private val lesson: Lesson) {
     }
 
     fun setDefaultDates(): LessonEventBuilder {
-        event.start = EventDateTime().setDateTime(lesson.startDate)
-        event.end = EventDateTime().setDateTime(lesson.endDate)
+        event.start = EventDateTime().setDateTime(DateTime(lesson.startDate))
+        event.end = EventDateTime().setDateTime(DateTime(lesson.endDate))
 
         return this
     }
