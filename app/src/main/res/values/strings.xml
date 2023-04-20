@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">stusync</string>
     <string name="test_button_text">Choose ICal and load to Google Calendar</string>
+    <string name="sign_in_google_button_text">Sign in Google</string>
+    <string name="sign_in_modeus_button_text">Sign in Modeus</string>
 </resources>

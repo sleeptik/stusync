@@ -1,23 +1,17 @@
-package com.stusyncteam.stusync
+package com.stusyncteam.stusync.ui.main
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.ApiException
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
+import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
-import com.stusyncteam.stusync.api.google.GoogleSignInFacade
 import com.stusyncteam.stusync.api.modeus.ical.ICalCalendarFacade
 import com.stusyncteam.stusync.api.modeus.models.Lesson
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -26,26 +20,10 @@ import net.fortuna.ical4j.data.ParserException
 
 
 class MainActivity : AppCompatActivity() {
-    private var account: GoogleSignInAccount? = null
-
-    private var signInLauncher: ActivityResultLauncher<Intent>
     private var consentLauncher: ActivityResultLauncher<Intent>
     private var openCalendarAndUploadLauncher: ActivityResultLauncher<Array<String>>
 
     init {
-        signInLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == RESULT_OK && it.data != null) {
-                try {
-                    account = GoogleSignIn.getSignedInAccountFromIntent(it.data).result
-                } catch (e: ApiException) {
-                    Toast.makeText(this, "Couldn't get logged account", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
-
         consentLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
@@ -86,21 +64,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val testButton = findViewById<Button>(R.id.test_button)
-        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
 
-        signInButton.setOnClickListener {
-            val signInFacade = GoogleSignInFacade(this)
-            account = signInFacade.getLastSignedInAccount()
-
-            if (account == null) {
-                signInLauncher.launch(signInFacade.getSignInIntent())
-            } else {
-                it.visibility = View.GONE
-                testButton.visibility = View.VISIBLE
-            }
-
-            findViewById<TextView>(R.id.plain_text).text = account?.email ?: "null"
-        }
 
         testButton.setOnClickListener {
             openCalendarAndUploadLauncher.launch(arrayOf("text/calendar"))
