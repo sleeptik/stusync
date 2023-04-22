@@ -18,7 +18,7 @@
             android:id="@+id/google_sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sign_in_google_button_text"
+            android:text="@string/sign_in_google_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="@string/sign_in_modeus_button_text"
+            android:text="@string/sign_in_modeus_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/google_sign_in_button" />

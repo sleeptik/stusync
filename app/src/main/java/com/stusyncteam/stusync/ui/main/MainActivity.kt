@@ -9,11 +9,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
 import com.stusyncteam.stusync.api.modeus.ical.ICalCalendarFacade
 import com.stusyncteam.stusync.api.modeus.models.Lesson
+import com.stusyncteam.stusync.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import net.fortuna.ical4j.data.ParserException
@@ -22,6 +24,7 @@ import net.fortuna.ical4j.data.ParserException
 class MainActivity : AppCompatActivity() {
     private var consentLauncher: ActivityResultLauncher<Intent>
     private var openCalendarAndUploadLauncher: ActivityResultLauncher<Array<String>>
+    private var goToSettingsLauncher: ActivityResultLauncher<Intent>
 
     init {
         consentLauncher = registerForActivityResult(
@@ -57,17 +60,22 @@ class MainActivity : AppCompatActivity() {
                 calendar.executeAll(requests)
             }
         }
+
+        goToSettingsLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val testButton = findViewById<Button>(R.id.test_button)
-
-
-        testButton.setOnClickListener {
+        findViewById<Button>(R.id.test_button).setOnClickListener {
             openCalendarAndUploadLauncher.launch(arrayOf("text/calendar"))
+        }
+
+        findViewById<FloatingActionButton>(R.id.go_to_settings).setOnClickListener {
+            goToSettingsLauncher.launch(Intent(this, SettingsActivity::class.java))
         }
     }
 
