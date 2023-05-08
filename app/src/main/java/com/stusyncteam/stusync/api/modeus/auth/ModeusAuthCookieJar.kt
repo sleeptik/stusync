@@ -1,0 +1,49 @@
+package com.stusyncteam.stusync.api.modeus.auth
+
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
+
+class ModeusAuthCookieJar : CookieJar {
+    private val jar = mutableListOf<Cookie>()
+
+    private val cookiesToCollect = listOf(
+        "tc01",
+        "session-cookie",
+        "MSISAuth",
+        "JSESSIONID",
+        "commonAuthId"
+    )
+
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
+        return when (url.host) {
+            "utmn.modeus.org" -> {
+                jar.filter { it.name == "tc01" }
+            }
+
+            "fs.utmn.ru" -> {
+                jar.filter {
+                    it.name == "session-cookie"
+                            || it.name == "MSISAuth"
+                }
+            }
+
+            "auth.modeus.org" -> {
+                jar.filter {
+                    it.name == "tc01"
+                            || it.name == "JSESSIONID"
+                            || it.name == "commmonAuthId"
+                }
+            }
+
+            else -> {
+                return emptyList()
+            }
+        }
+    }
+
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        val filteredJar = cookies.filter { cookiesToCollect.contains(it.name) }
+        jar.addAll(filteredJar)
+    }
+}
