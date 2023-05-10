@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
             contentResolver.openInputStream(it)!!.use { stream ->
                 try {
-                    lessons = ICalCalendarFacade.fromStream(stream).getLessons()
+                    lessons = ICalCalendarFacade.fromStream(stream).lessons
                 } catch (e: ParserException) {
                     Log.e("ICal", e.message.toString())
                     return@registerForActivityResult

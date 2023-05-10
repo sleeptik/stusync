@@ -5,41 +5,36 @@ import net.fortuna.ical4j.data.CalendarBuilder
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.component.VEvent
 import java.io.InputStream
-import java.io.StringReader
 
 class ICalCalendarFacade private constructor(private val calendar: Calendar) {
     companion object {
         fun fromStream(stream: InputStream): ICalCalendarFacade {
-            val formattedStream = formatTimeStampsAndGetStream(stream)
-            formattedStream.use {
-                return ICalCalendarFacade(CalendarBuilder().build(it))
+            val contents = stream.bufferedReader().use {
+                it.readText()
             }
-        }
 
-        private fun formatTimeStampsAndGetStream(stream: InputStream): StringReader {
-            // TODO: Replace with regex to support different timezones
-            val toReplace = ";TZID=Asia/Yekaterinburg"
-            val replaceWith = ""
-            return stream.bufferedReader()
-                .readText()
-                .replace(toReplace, replaceWith)
-                .reader()
+            val timezoneIdRegex = Regex(";TZID=\\w+/\\w+")
+            val filteredContents = contents.replace(timezoneIdRegex, "")
+
+            filteredContents.reader().use {
+                val calendar = CalendarBuilder().build(it)
+                return ICalCalendarFacade(calendar)
+            }
         }
     }
 
+    val lessons: List<Lesson> get() = getLessons()
+
     fun getLessons(): List<Lesson> {
-        val components = calendar.getComponents<VEvent>("VEVENT")
-
-        val lessons = components.map {
-            Lesson(
-                it.summary.value,
-                it.location.value,
-                "exclude",
-                it.startDate.date,
-                it.endDate.date
-            )
-        }
-
-        return lessons
+        return calendar.getComponents<VEvent>("VEVENT")
+            .map {
+                Lesson(
+                    it.summary.value,
+                    it.location.value,
+                    "",
+                    it.startDate.date,
+                    it.endDate.date
+                )
+            }
     }
 }

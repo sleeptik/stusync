@@ -34,7 +34,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar) {
 
     fun prepareRequests(lessons: List<Lesson>): Collection<CalendarRequest<*>> {
         val requests = lessons.map {
-            val event = LessonEventBuilder(it)
+            val event = GoogleEventBuilder(it)
                 .setDefaultSummary()
                 .setDefaultDescription()
                 .setDefaultReminders()
