@@ -115,7 +115,9 @@ class ModeusSignIn private constructor(private val userCredentials: UserCredenti
             .url("https://auth.modeus.org/commonauth")
             .post(commonAuthRequestBody)
             .build()
+
         val response = httpClient.newCall(request).execute()
+
         return URL(response.use { it.priorResponse?.header("location") })
     }
 
@@ -124,9 +126,9 @@ class ModeusSignIn private constructor(private val userCredentials: UserCredenti
             .url(authorizedSessionUrl)
             .head()
             .build()
+
         val response = httpClient.newCall(request).execute()
         val modeusUrl = response.use { it.request.url }
-
 
         return modeusUrl.fragment!!
             .split("&")
