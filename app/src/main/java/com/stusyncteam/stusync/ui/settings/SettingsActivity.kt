@@ -3,7 +3,6 @@ package com.stusyncteam.stusync.ui.settings
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.google.gson.Gson
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
 import kotlinx.coroutines.runBlocking
@@ -24,8 +23,6 @@ class SettingsActivity : AppCompatActivity() {
                 notificationSettings.value = settingsDataStore.loadNotificationsSettings()
             }
         }
-
-        val json = Gson().toJson(settingsViewModel)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
         binding.lifecycleOwner = this
