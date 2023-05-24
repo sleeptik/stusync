@@ -13,6 +13,7 @@ import java.net.URL
 class ModeusSignIn private constructor(private val userCredentials: UserCredentials) {
     companion object {
         fun login(userCredentials: UserCredentials): ModeusSession {
+            // TODO throw and catch during authorization
             val signIn = ModeusSignIn(userCredentials)
 
             val loginUrl = let {
@@ -73,7 +74,8 @@ class ModeusSignIn private constructor(private val userCredentials: UserCredenti
             val request = Request.Builder().get().url(adfsGetUrl).build()
             val response = httpClient.newCall(request).execute()
             response.use { r ->
-                val htmlDocument = Jsoup.parse(r.body?.string())
+                // TODO find better exception for nonexistent html body
+                val htmlDocument = Jsoup.parse(r.body?.string() ?: throw Exception())
                 val form = htmlDocument.forms().first { it.id() == "loginForm" }
                 val postAction = form.attr("action")
                 URL("https://fs.utmn.ru${postAction}")
@@ -91,11 +93,12 @@ class ModeusSignIn private constructor(private val userCredentials: UserCredenti
 
         val response = httpClient.newCall(request).execute()
         return response.use { r ->
-            val htmlDocument = Jsoup.parse(r.body?.string())
+            // TODO find better exception for nonexistent html body
+            val htmlDocument = Jsoup.parse(r.body?.string() ?: throw Exception())
             val errorElement = htmlDocument.getElementById("errorText")
 
             if (errorElement != null && errorElement.text() != "")
-                throw Exception() //TODO EXCEPTION
+                throw Exception() // TODO find better exception for auth error
 
             val form = htmlDocument.forms().first { it.attr("name") == "hiddenform" }
             form.getElementsByTag("input")
