@@ -1,15 +1,15 @@
-package com.stusyncteam.stusync.api.modeus.auth
+package com.stusyncteam.modeus.api.util
 
 import java.net.URL
 import java.net.URLEncoder
 
-class QueryUtil {
+internal class QueryUtils {
     companion object {
         fun transformMapToQueryString(map: Map<String, String>): String {
             return map
                 .map {
-                    val encodedKey = URLEncoder.encode(it.key, "utf-8")
-                    val encodedValue = URLEncoder.encode(it.value, "utf-8")
+                    val encodedKey = URLEncoder.encode(it.key, Charsets.UTF_8.name())
+                    val encodedValue = URLEncoder.encode(it.value, Charsets.UTF_8.name())
                     "${encodedKey}=${encodedValue}"
                 }
                 .joinToString("&")

@@ -5,9 +5,9 @@ import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.Event.Reminders
 import com.google.api.services.calendar.model.EventDateTime
 import com.google.api.services.calendar.model.EventReminder
-import com.stusyncteam.stusync.api.modeus.models.Lesson
+import com.stusyncteam.modeus.api.models.ModeusEvent
 
-class GoogleEventBuilder(private val lesson: Lesson) {
+class GoogleEventBuilder(private val modeusEvent: ModeusEvent) {
     val event: Event = Event()
 
     fun setDefaultReminders(): GoogleEventBuilder {
@@ -25,7 +25,7 @@ class GoogleEventBuilder(private val lesson: Lesson) {
 
     fun setDefaultDescription(): GoogleEventBuilder {
         val description = StringBuilder()
-            .appendLine("${lesson.building} ${lesson.classroom}")
+            .appendLine("${modeusEvent.building} ${modeusEvent.classroom}")
             .appendLine("lesson type")
             .toString()
 
@@ -35,14 +35,14 @@ class GoogleEventBuilder(private val lesson: Lesson) {
     }
 
     fun setDefaultDates(): GoogleEventBuilder {
-        event.start = EventDateTime().setDateTime(DateTime(lesson.startDate))
-        event.end = EventDateTime().setDateTime(DateTime(lesson.endDate))
+        event.start = EventDateTime().setDateTime(DateTime(modeusEvent.start))
+        event.end = EventDateTime().setDateTime(DateTime(modeusEvent.end))
 
         return this
     }
 
     fun setDefaultSummary(): GoogleEventBuilder {
-        event.summary = lesson.name
+        event.summary = modeusEvent.name
 
         return this
     }

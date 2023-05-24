@@ -64,14 +64,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    implementation project(path: ':modeus')
+
     implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
-
-    implementation('org.mnode.ical4j:ical4j:3.2.11') {
-        exclude group: 'org.codehaus.groovy'
-    }
-
-    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-    implementation 'org.jsoup:jsoup:1.16.1'
 
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
     implementation 'com.google.api-client:google-api-client:2.2.0'

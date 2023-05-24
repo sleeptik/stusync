@@ -1,17 +1,19 @@
-package com.stusyncteam.stusync.api.modeus.auth
+package com.stusyncteam.modeus.api.auth
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.stusyncteam.modeus.ModeusSession
+import com.stusyncteam.modeus.api.util.QueryUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
 import java.net.URL
 
-class ModeusSignIn private constructor(private val userData: ModeusLoginUserData) {
+class ModeusSignIn private constructor(private val userCredentials: UserCredentials) {
     companion object {
-        fun login(userData: ModeusLoginUserData): ModeusSession {
-            val signIn = ModeusSignIn(userData)
+        fun login(userCredentials: UserCredentials): ModeusSession {
+            val signIn = ModeusSignIn(userCredentials)
 
             val loginUrl = let {
                 val appConfig = signIn.getAppConfigJson()
@@ -30,7 +32,7 @@ class ModeusSignIn private constructor(private val userData: ModeusLoginUserData
     }
 
     private val httpClient = OkHttpClient.Builder()
-        .cookieJar(ModeusAuthCookieJar())
+        .cookieJar(AuthCookieJar())
         .build()
 
     private fun getAppConfigJson(): JsonObject {
@@ -52,12 +54,12 @@ class ModeusSignIn private constructor(private val userData: ModeusLoginUserData
             "redirect_uri" to "https://utmn.modeus.org/",
             "response_type" to "id_token",
             "scope" to "openid",
-            "nonce" to ModeusSecretGenerator.createSecretString(),
-            "state" to ModeusSecretGenerator.createSecretString()
+            "nonce" to SecretGenerator.createSecretString(),
+            "state" to SecretGenerator.createSecretString()
         )
 
-        val queryString = QueryUtil.transformMapToQueryString(authorizationData)
-        return QueryUtil.joinUrlToQueryString(loginUrl, queryString)
+        val queryString = QueryUtils.transformMapToQueryString(authorizationData)
+        return QueryUtils.joinUrlToQueryString(loginUrl, queryString)
     }
 
     private fun getAdfsAuthUrl(loginUrl: URL): URL {
@@ -83,7 +85,7 @@ class ModeusSignIn private constructor(private val userData: ModeusLoginUserData
 
     private fun authorizeThroughAdfs(adfsAuthUrl: URL): Map<String, String> {
         val request = Request.Builder()
-            .post(ModeusRequestBodyFactory.createAdfsAuthRequestBody(userData))
+            .post(AuthRequestBodyFactory.createAdfsAuthRequestBody(userCredentials))
             .url(adfsAuthUrl)
             .build()
 
@@ -104,7 +106,7 @@ class ModeusSignIn private constructor(private val userData: ModeusLoginUserData
 
     private fun authorizeThroughCommonAuth(adfsAuthResult: Map<String, String>): URL {
         val commonAuthRequestBody =
-            ModeusRequestBodyFactory.createCommonAuthRequestBody(adfsAuthResult)
+            AuthRequestBodyFactory.createCommonAuthRequestBody(adfsAuthResult)
 
         val request = Request.Builder()
             .url("https://auth.modeus.org/commonauth")
@@ -122,12 +124,11 @@ class ModeusSignIn private constructor(private val userData: ModeusLoginUserData
         val response = httpClient.newCall(request).execute()
         val modeusUrl = response.use { it.request.url }
 
-        val token = modeusUrl.fragment
-            ?.split("&")
-            ?.first { it.startsWith("id_token") }
-            ?.split("=")
-            ?.first { !it.startsWith("id_token") }
 
-        return token!!
+        return modeusUrl.fragment!!
+            .split("&")
+            .first { it.startsWith("id_token") }
+            .split("=")
+            .first { !it.startsWith("id_token") }
     }
 }

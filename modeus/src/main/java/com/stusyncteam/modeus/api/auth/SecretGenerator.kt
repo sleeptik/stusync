@@ -1,8 +1,8 @@
-package com.stusyncteam.stusync.api.modeus.auth
+package com.stusyncteam.modeus.api.auth
 
 import java.security.SecureRandom
 
-class ModeusSecretGenerator {
+internal class SecretGenerator {
     companion object {
         fun createSecretString(): String {
             val bytes = ByteArray(16)

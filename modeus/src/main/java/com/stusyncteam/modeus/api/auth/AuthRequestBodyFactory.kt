@@ -1,23 +1,24 @@
-package com.stusyncteam.stusync.api.modeus.auth
+package com.stusyncteam.modeus.api.auth
 
+import com.stusyncteam.modeus.api.util.QueryUtils
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class ModeusRequestBodyFactory {
+internal class AuthRequestBodyFactory {
     companion object {
-        fun createAdfsAuthRequestBody(userAuthData: ModeusLoginUserData): RequestBody {
+        fun createAdfsAuthRequestBody(userAuthData: UserCredentials): RequestBody {
             val formData = mapOf(
                 "UserName" to userAuthData.username,
                 "Password" to userAuthData.password,
-                "AuthMethod" to "FormsAuthentication",
+                "AuthMethod" to "FormsAuthentication"
             )
-            val queryString = QueryUtil.transformMapToQueryString(formData)
+            val queryString = QueryUtils.transformMapToQueryString(formData)
             return queryString.toRequestBody("application/x-www-form-urlencoded".toMediaType())
         }
 
         fun createCommonAuthRequestBody(commonAuthFormInputs: Map<String, String>): RequestBody {
-            val queryString = QueryUtil.transformMapToQueryString(commonAuthFormInputs)
+            val queryString = QueryUtils.transformMapToQueryString(commonAuthFormInputs)
             return queryString.toRequestBody("application/x-www-form-urlencoded".toMediaType())
         }
     }

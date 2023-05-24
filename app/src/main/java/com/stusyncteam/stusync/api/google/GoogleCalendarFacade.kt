@@ -7,7 +7,7 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarRequest
 import com.google.api.services.calendar.CalendarScopes
-import com.stusyncteam.stusync.api.modeus.models.Lesson
+import com.stusyncteam.modeus.api.models.ModeusEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Collections
@@ -32,8 +32,8 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar) {
         }
     }
 
-    fun prepareRequests(lessons: List<Lesson>): Collection<CalendarRequest<*>> {
-        val requests = lessons.map {
+    fun prepareRequests(modeusEvents: List<ModeusEvent>): Collection<CalendarRequest<*>> {
+        val requests = modeusEvents.map {
             val event = GoogleEventBuilder(it)
                 .setDefaultSummary()
                 .setDefaultDescription()

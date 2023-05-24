@@ -1,10 +1,10 @@
-package com.stusyncteam.stusync.api.modeus.auth
+package com.stusyncteam.modeus.api.auth
 
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 
-class ModeusAuthCookieJar : CookieJar {
+internal class AuthCookieJar : CookieJar {
     private val jar = mutableListOf<Cookie>()
 
     private val cookiesToCollect = listOf(
@@ -43,7 +43,7 @@ class ModeusAuthCookieJar : CookieJar {
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        val filteredJar = cookies.filter { cookiesToCollect.contains(it.name) }
-        jar.addAll(filteredJar)
+        val filteredResponseCookies = cookies.filter { cookiesToCollect.contains(it.name) }
+        jar.addAll(filteredResponseCookies)
     }
 }

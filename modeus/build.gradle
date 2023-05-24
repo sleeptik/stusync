@@ -1,0 +1,25 @@
+plugins {
+//    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+//java {
+//    sourceCompatibility = JavaVersion.VERSION_1_8
+//    targetCompatibility = JavaVersion.VERSION_1_8
+//}
+
+kotlin {
+    jvmToolchain(17)
+
+//    sourceCompatibility JavaVersion.VERSION_17
+//    targetCompatibility JavaVersion.VERSION_17
+}
+
+dependencies {
+    testImplementation("junit:junit:4.13.2")
+
+    implementation("org.jsoup:jsoup:1.16.1")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("joda-time:joda-time:2.12.5")
+}
