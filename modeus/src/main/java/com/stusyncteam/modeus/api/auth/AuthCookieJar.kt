@@ -37,7 +37,7 @@ internal class AuthCookieJar : CookieJar {
             }
 
             else -> {
-                return emptyList()
+                emptyList()
             }
         }
     }
