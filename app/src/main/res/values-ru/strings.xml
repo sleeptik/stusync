@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sync_btn">Ручная синхронизация</string>
+    <string name="sign_in_modeus_btn">Войти в Modeus</string>
+    <string name="import_settings_txt">Настройки импорта</string>
+    <string name="notification_settings_txt">Настройки Уведомлений</string>
+    <string name="on_schedule_change_slider">При изменении в расписании</string>
+    <string name="before_next_lesson_slider">Перед началом следующей пары</string>
+    <string name="has_teacher_name_slider">ФИО преподавателя</string>
+    <string name="has_lesson_type_slider">Тип занятия</string>
+    <string name="frequency_txt">Частота уведомлений</string>
+    <string name="sign_in_google_btn">Войти в Google</string>
+    <string name="last_sync">Последняя синхронизация: 21..05.2023</string>
+    <string name="last_sync_created">Создано: 0</string>
+    <string name="last_sync_modified">"Изменено: 0 "</string>
+    <string name="last_sync_deleted">Удалено: 0</string>
+
+    <string-array name="frequency">
+        <item>Раз в 12 Часов</item>
+        <item>Раз в сутки</item>
+        <item>Раз в 3 дня</item>
+        <item>Раз в неделю</item>
+    </string-array>
+</resources>

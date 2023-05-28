@@ -27,7 +27,6 @@
             android:id="@+id/modeus_sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:text="@string/sign_in_modeus_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
