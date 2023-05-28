@@ -1,21 +1,25 @@
 <resources>
-    <string name="app_name">stusync</string>
-    <string name="test_btn">Choose ICal and load to Google Calendar</string>
+    <string name="app_name" translatable="false">stusync</string>
+    <string name="sync_btn">Manual sync</string>
     <string name="sign_in_google_btn">Sign in Google</string>
     <string name="sign_in_modeus_btn">Sign in Modeus</string>
 
-    <string name="import_settings_txt">Настройки импорта</string>
-    <string name="notification_settings_txt">Настройки Уведомлений</string>
-    <string name="on_schedule_change_slider">При изменении в расписании</string>
-    <string name="before_next_lesson_slider">Перед началом следующей пары</string>
-    <string name="has_teacher_name_slider">ФИО преподавателя</string>
-    <string name="has_lesson_type_slider">Тип занятия</string>
-    <string name="frequency_txt">Частота уведомлений</string>
+    <string name="import_settings_txt">Import settings</string>
+    <string name="notification_settings_txt">Notification settings</string>
+    <string name="on_schedule_change_slider">On schedule change</string>
+    <string name="before_next_lesson_slider">Before next lesson start</string>
+    <string name="has_teacher_name_slider">Teacher fullname</string>
+    <string name="has_lesson_type_slider">Lesson type</string>
+    <string name="frequency_txt">Notification frequency</string>
+    <string name="last_sync">Last sync: 5/21/2023</string>
+    <string name="last_sync_created">Created: 0</string>
+    <string name="last_sync_modified">Modified: 0</string>
+    <string name="last_sync_deleted">Deleted: 0</string>
 
     <string-array name="frequency">
-        <item>Раз в 12 Часов</item>
-        <item>Раз в сутки</item>
-        <item>Раз в 3 дня</item>
-        <item>Раз в неделю</item>
+        <item>Every 12 hours</item>
+        <item>Everyday</item>
+        <item>Every 3 days</item>
+        <item>Every week</item>
     </string-array>
 </resources>
