@@ -1,12 +1,10 @@
-package com.stusyncteam.stusync.ui.settings
+package com.stusyncteam.stusync.storage.settings
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
-import com.stusyncteam.stusync.ui.settings.data.ImportSettings
-import com.stusyncteam.stusync.ui.settings.data.NotificationSettings
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 

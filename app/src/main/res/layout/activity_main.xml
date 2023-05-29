@@ -7,7 +7,7 @@
     tools:context=".ui.main.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/sync_info"
+        android:id="@+id/sync_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,61 +15,70 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/last_sync_txt"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_last_sync"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/last_sync"
+            android:text="@string/tv_last_sync_date"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/last_sync_created_txt"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_last_sync_created"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/last_sync_created"
+            android:text="@string/tv_last_sync_total_created"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/last_sync_txt" />
+            app:layout_constraintTop_toBottomOf="@id/tv_last_sync" />
 
-        <TextView
-            android:id="@+id/last_sync_modified_txt"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_last_sync_modified"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/last_sync_modified"
+            android:text="@string/tv_last_sync_total_modified"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/last_sync_created_txt" />
+            app:layout_constraintTop_toBottomOf="@id/tv_last_sync_created" />
 
-        <TextView
-            android:id="@+id/last_sync_deleted_txt"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_last_sync_deleted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/last_sync_deleted"
+            android:text="@string/tv_last_sync_total_deleted"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/last_sync_modified_txt" />
+            app:layout_constraintTop_toBottomOf="@id/tv_last_sync_modified" />
 
-        <Button
-            android:id="@+id/test_button"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_manual_sync"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="36dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="36dp"
-            android:text="@string/sync_btn"
+            android:layout_marginTop="@dimen/small_margin"
+            android:text="@string/btn_manual_sync"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/last_sync_deleted_txt" />
+            app:layout_constraintTop_toBottomOf="@id/tv_last_sync_deleted" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/go_to_settings"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/sw_auto_sync"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:text="@string/sw_auto_sync"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sync_layout"
+        app:switchPadding="@dimen/default_switch_padding" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_open_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_margin"
         android:importantForAccessibility="no"
         android:src="@drawable/baseline_settings_24"
         app:layout_constraintBottom_toBottomOf="parent"

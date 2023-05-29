@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
+import com.stusyncteam.stusync.storage.settings.SettingsDataStore
 import kotlinx.coroutines.runBlocking
-
 
 class SettingsActivity : AppCompatActivity() {
     private val settingsViewModel = SettingsViewModel()

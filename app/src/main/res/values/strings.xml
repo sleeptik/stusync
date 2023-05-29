@@ -1,24 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">stusync</string>
-    <string name="sync_btn">Manual sync</string>
-    <string name="sign_in_google_btn">Sign in Google</string>
-    <string name="sign_in_modeus_btn">Sign in Modeus</string>
-
-    <string name="import_settings_txt">Import settings</string>
-    <string name="notification_settings_txt">Notification settings</string>
-    <string name="on_schedule_change_slider">On schedule change</string>
-    <string name="before_next_lesson_slider">Before next lesson start</string>
-    <string name="has_teacher_name_slider">Teacher fullname</string>
-    <string name="has_lesson_type_slider">Lesson type</string>
-    <string name="frequency_txt">Notification frequency</string>
-    <string name="last_sync">Last sync: 5/21/2023</string>
-    <string name="last_sync_created">Created: 0</string>
-    <string name="last_sync_modified">Modified: 0</string>
-    <string name="last_sync_deleted">Deleted: 0</string>
-
-    <string-array name="frequency">
+    <string name="btn_manual_sync">Manual sync</string>
+    <string name="btn_sign_in_google">Sign in Google</string>
+    <string name="btn_sign_in_modeus">Sign in Modeus</string>
+    <string name="tv_import_settings_heading">Import settings</string>
+    <string name="tv_notification_settings">Notification settings</string>
+    <string name="sw_on_schedule_change">On schedule change</string>
+    <string name="sw_before_next_lesson">Before next lesson start</string>
+    <string name="sw_should_import_teacher_full_name">Include teacher\'s Full Name</string>
+    <string name="sw_should_import_lesson_type">Include lesson type</string>
+    <string name="tv_last_sync_date">Last sync: 5/21/2023</string>
+    <string name="tv_last_sync_total_created">Created: 0</string>
+    <string name="tv_last_sync_total_modified">Modified: 0</string>
+    <string name="tv_last_sync_total_deleted">Deleted: 0</string>
+    <string name="tv_sync_settings">Sync settings</string>
+    <string name="tv_sync_frequency">Sync frequency</string>
+    <string name="sw_auto_sync">Enable automatic synchronization</string>
+    <string-array name="sync_frequency">
         <item>Every 12 hours</item>
-        <item>Everyday</item>
+        <item>Every day</item>
         <item>Every 3 days</item>
         <item>Every week</item>
     </string-array>

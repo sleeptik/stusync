@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="medium_margin">16dp</dimen>
+    <dimen name="big_margin">32dp</dimen>
+    <dimen name="active_region_padding">32dp</dimen>
+    <dimen name="settings_heading_font_size">24sp</dimen>
+    <dimen name="default_switch_padding">16dp</dimen>
+</resources>

@@ -1,4 +1,4 @@
-package com.stusyncteam.stusync.ui.settings.data
+package com.stusyncteam.stusync.storage.settings
 
 data class ImportSettings(
     var shouldImportTeacherName: Boolean = false,

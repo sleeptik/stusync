@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        findViewById<Button>(R.id.google_sign_in_button).setOnClickListener {
+        findViewById<Button>(R.id.btn_sign_in_google).setOnClickListener {
             askUserToLogInGoogleAccount()
         }
 

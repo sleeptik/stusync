@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<FloatingActionButton>(R.id.go_to_settings).setOnClickListener {
+        findViewById<FloatingActionButton>(R.id.btn_open_settings).setOnClickListener {
             goToSettingsLauncher.launch(Intent(this, SettingsActivity::class.java))
         }
     }

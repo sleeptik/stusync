@@ -14,23 +14,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/google_sign_in_button"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sign_in_google"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sign_in_google_btn"
+            android:text="@string/btn_sign_in_google"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/modeus_sign_in_button"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sign_in_modeus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sign_in_modeus_btn"
+            android:text="@string/btn_sign_in_modeus"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/google_sign_in_button" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_sign_in_google" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
