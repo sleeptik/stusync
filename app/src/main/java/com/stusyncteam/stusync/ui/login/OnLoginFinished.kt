@@ -1,5 +1,5 @@
 package com.stusyncteam.stusync.ui.login
 
-interface ILoginActivity {
+interface OnLoginFinished {
     fun onLoginFinished()
 }

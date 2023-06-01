@@ -11,7 +11,7 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.stusyncteam.stusync.R
 
-class GoogleLoginActivity : AppCompatActivity(), ILoginActivity {
+class GoogleLoginActivity : AppCompatActivity(), OnLoginFinished {
     private val signInGoogleLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
