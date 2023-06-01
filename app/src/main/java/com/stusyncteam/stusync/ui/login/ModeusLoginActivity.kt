@@ -22,6 +22,9 @@ class ModeusLoginActivity : AppCompatActivity(), OnLoginFinished {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modeus_login)
 
+        if (loadCredentials() != null)
+            onLoginFinished()
+
         findViewById<Button>(R.id.btn_sign_in_modeus).setOnClickListener {
             val login = findViewById<EditText>(R.id.et_login).text.toString()
             val password = findViewById<EditText>(R.id.et_password).text.toString()
