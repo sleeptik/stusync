@@ -11,6 +11,8 @@ internal class PersonRepository {
     companion object {
         private const val ApiUrl =
             "https://utmn.modeus.org/schedule-calendar-v2/api/people/persons/search/"
+        private const val MySelfApiUrl =
+            "https://utmn.modeus.org/students-app/api/pages/student-card/my/primary"
     }
 
     fun getPersonByName(
@@ -20,18 +22,46 @@ internal class PersonRepository {
     ): ModeusPerson {
         val body = RepositoryRequestBodyFactory.createSearchPersonRequestBody(fullName)
 
-        val request: Request = Request.Builder()
+        val request = Request.Builder()
             .url(ApiUrl)
             .post(body)
             .addHeader("authorization", "Bearer $authToken")
             .build()
 
         httpClient.newCall(request).execute().use {
-            return getPersonFromResponse(it)
+            return getPersonFromSearchResponse(it)
         }
     }
 
-    private fun getPersonFromResponse(response: Response): ModeusPerson {
+    fun getMyself(
+        httpClient: OkHttpClient,
+        authToken: String
+    ): ModeusPerson {
+        val body = RepositoryRequestBodyFactory.createSelfPersonRequestBody()
+
+        val request = Request.Builder()
+            .url(MySelfApiUrl)
+            .post(body)
+            .addHeader("authorization", "Bearer $authToken")
+            .build()
+        httpClient.newCall(request).execute().use {
+            return getPersonFromSelfResponse(it)
+        }
+    }
+
+    private fun getPersonFromSelfResponse(response: Response): ModeusPerson {
+        val jsonString = response.body?.string()
+        val json = JsonParser.parseString(jsonString).asJsonObject
+
+        return ModeusPerson(
+            UUID.fromString(json["personId"].asString),
+            json["name"].asString,
+            json["surname"].asString,
+            json["middleName"].asString
+        )
+    }
+
+    private fun getPersonFromSearchResponse(response: Response): ModeusPerson {
         val jsonResponse = JsonParser.parseString(response.body!!.string()).asJsonObject
         val embedded = jsonResponse["_embedded"].asJsonObject
 

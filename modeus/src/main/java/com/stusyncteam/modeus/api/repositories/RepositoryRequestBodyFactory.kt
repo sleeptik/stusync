@@ -39,5 +39,11 @@ internal class RepositoryRequestBodyFactory {
             val mediaType = "application/json".toMediaType()
             return jsonObject.toString().toRequestBody(mediaType)
         }
+
+        fun createSelfPersonRequestBody(): RequestBody {
+            val jsonObject = JsonObject()
+            val mediaType = "application/json".toMediaType()
+            return jsonObject.toString().toRequestBody(mediaType)
+        }
     }
 }

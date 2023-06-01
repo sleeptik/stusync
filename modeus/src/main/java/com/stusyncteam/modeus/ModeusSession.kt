@@ -13,6 +13,11 @@ class ModeusSession(
     private val personRepository: PersonRepository = PersonRepository()
     private val eventRepository: EventRepository = EventRepository()
 
+    fun getMyself(): ModeusPerson {
+        // TODO catch network, auth exceptions
+        return personRepository.getMyself(httpClient, authToken)
+    }
+
     fun getPersonByName(name: String): ModeusPerson {
         // TODO catch network, auth exceptions
         return personRepository.getPersonByName(httpClient, authToken, name)

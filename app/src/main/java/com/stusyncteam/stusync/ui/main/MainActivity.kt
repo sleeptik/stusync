@@ -65,13 +65,13 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch(handleRequestExecutionWithAuth())
             {
                 withContext(Dispatchers.IO) {
-//                    val googleCalendar = GoogleCalendarFacade.fromContext(this@MainActivity)
-//                    // TODO get person name
-//                    val person = modeusSession.getPersonByName("")
-//                    val events = modeusSession.getPersonEvents(person)
-//
-//                    val requests = googleCalendar.prepareRequests(events)
-//                    googleCalendar.executeAll(requests)
+                    val googleCalendar = GoogleCalendarFacade.fromContext(this@MainActivity)
+
+                    val self = modeusSession.getMyself()
+                    val events = modeusSession.getPersonEvents(self)
+
+                    val requests = googleCalendar.prepareRequests(events)
+                    googleCalendar.executeAll(requests)
                 }
                 it.isEnabled = true
             }
