@@ -2,22 +2,30 @@
 
 package com.stusyncteam.stusync.ui.main
 
+import android.Manifest.permission.*
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.stusyncteam.modeus.ModeusSession
 import com.stusyncteam.modeus.api.auth.ModeusSignIn
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
+import com.stusyncteam.stusync.background.BackgroundSyncWorker
 import com.stusyncteam.stusync.storage.credentials.CredentialsStorage
 import com.stusyncteam.stusync.ui.settings.SettingsActivity
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.models.PermissionRequest
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_manual_sync).setOnClickListener {
+            requestContactPermissionForSync()
             it.isEnabled = false
             lifecycleScope.launch(handleRequestExecutionWithAuth())
             {
@@ -75,6 +84,36 @@ class MainActivity : AppCompatActivity() {
                 }
                 it.isEnabled = true
             }
+        }
+
+
+
+        val autoSyncSwitch = findViewById<CompoundButton>(R.id.sw_auto_sync)
+        autoSyncSwitch.isChecked = true
+        autoSyncSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val workName = "stusync_auto_sync"
+            val workManager = WorkManager.getInstance(this)
+
+            if (isChecked) {
+                val backgroundSyncRequest = BackgroundSyncWorker.createPeriodicWorkRequest(15)
+                workManager.enqueueUniquePeriodicWork(
+                    workName,
+                    ExistingPeriodicWorkPolicy.UPDATE,
+                    backgroundSyncRequest
+                )
+            } else {
+                workManager.cancelUniqueWork(workName)
+            }
+        }
+    }
+
+
+    private fun requestContactPermissionForSync() {
+        if (!EasyPermissions.hasPermissions(this, GET_ACCOUNTS)) {
+            val permissionRequest = PermissionRequest.Builder(this)
+                .perms(arrayOf(GET_ACCOUNTS))
+                .build()
+            EasyPermissions.requestPermissions(this, permissionRequest)
         }
     }
 
