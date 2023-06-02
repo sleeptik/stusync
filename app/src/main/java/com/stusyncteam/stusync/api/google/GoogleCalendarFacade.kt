@@ -1,6 +1,7 @@
 package com.stusyncteam.stusync.api.google
 
 import android.content.Context
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
@@ -20,7 +21,10 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar) {
         fun fromContext(context: Context): GoogleCalendarFacade {
             val scopes = Collections.singleton(CalendarScopes.CALENDAR)
             val credential = GoogleAccountCredential.usingOAuth2(context, scopes)
-            credential.selectedAccount = credential.googleAccountManager.accounts.first()
+
+            val currentAccount = GoogleSignIn.getLastSignedInAccount(context)
+            val deviceAccounts = credential.googleAccountManager.accounts
+            credential.selectedAccount = deviceAccounts.first { it.name == currentAccount?.email }
 
             val transport = GoogleNetHttpTransport.newTrustedTransport()
             val jsonFactory = GsonFactory.getDefaultInstance()
