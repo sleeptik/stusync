@@ -27,6 +27,7 @@ class GoogleEventBuilder(private val modeusEvent: ModeusEvent) {
         val description = StringBuilder()
             .appendLine("${modeusEvent.building} ${modeusEvent.classroom}")
             .appendLine("lesson type")
+            .appendLine("ID=${modeusEvent.id}")
             .toString()
 
         event.description = description
