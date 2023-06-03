@@ -6,11 +6,11 @@ import android.Manifest.permission.*
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val autoSyncSwitch = findViewById<CompoundButton>(R.id.sw_auto_sync)
+        val autoSyncSwitch = findViewById<SwitchCompat>(R.id.sw_auto_sync)
         autoSyncSwitch.isChecked = loadAutoSyncSettings().isEnabled
         autoSyncSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
