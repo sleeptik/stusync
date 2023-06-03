@@ -16,12 +16,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textview.MaterialTextView
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.stusyncteam.modeus.ModeusSession
 import com.stusyncteam.modeus.api.auth.ModeusSignIn
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
 import com.stusyncteam.stusync.background.BackgroundSyncWorker
+import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
 import com.stusyncteam.stusync.storage.credentials.CredentialsStorage
 import com.stusyncteam.stusync.ui.settings.SettingsActivity
 import com.vmadalin.easypermissions.EasyPermissions
@@ -35,6 +37,9 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
     private var consentLauncher: ActivityResultLauncher<Intent>
     private var openSettingsLauncher: ActivityResultLauncher<Intent>
+
+    private lateinit var binding: ActivitySettingsBinding
+    private val syncViewModel = SyncStatsViewModel()
 
     private lateinit var modeusSession: ModeusSession
 
@@ -77,10 +82,9 @@ class MainActivity : AppCompatActivity() {
                     val googleCalendar = GoogleCalendarFacade.fromContext(this@MainActivity)
 
                     val self = modeusSession.getMyself()
-                    val events = modeusSession.getPersonEvents(self)
+                    val events = modeusSession.getPersonEvents(self).toMutableList()
 
-                    val requests = googleCalendar.prepareRequests(events)
-                    googleCalendar.executeAll(requests)
+                    googleCalendar.updateCalendar(events)
                 }
                 it.isEnabled = true
             }

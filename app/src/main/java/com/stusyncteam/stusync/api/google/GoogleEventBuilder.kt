@@ -8,6 +8,10 @@ import com.google.api.services.calendar.model.EventReminder
 import com.stusyncteam.modeus.api.models.ModeusEvent
 
 class GoogleEventBuilder(private val modeusEvent: ModeusEvent) {
+    companion object {
+         const val modeusUuidPrefix = "modeus-"
+    }
+
     val event: Event = Event()
 
     fun setDefaultReminders(): GoogleEventBuilder {
@@ -26,7 +30,8 @@ class GoogleEventBuilder(private val modeusEvent: ModeusEvent) {
     fun setDefaultDescription(): GoogleEventBuilder {
         val description = StringBuilder()
             .appendLine("${modeusEvent.building} ${modeusEvent.classroom}")
-            .appendLine("lesson type")
+            .appendLine()
+            .appendLine("${modeusUuidPrefix}${modeusEvent.id}")
             .toString()
 
         event.description = description
