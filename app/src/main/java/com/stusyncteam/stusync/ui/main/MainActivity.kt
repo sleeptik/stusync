@@ -5,7 +5,6 @@ package com.stusyncteam.stusync.ui.main
 import android.Manifest.permission.*
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.Toast
@@ -16,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textview.MaterialTextView
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.stusyncteam.modeus.ModeusSession
 import com.stusyncteam.modeus.api.auth.ModeusSignIn
@@ -89,7 +87,6 @@ class MainActivity : AppCompatActivity() {
                 it.isEnabled = true
             }
         }
-
 
 
         val autoSyncSwitch = findViewById<CompoundButton>(R.id.sw_auto_sync)
