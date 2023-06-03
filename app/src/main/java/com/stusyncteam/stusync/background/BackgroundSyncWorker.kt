@@ -2,39 +2,37 @@ package com.stusyncteam.stusync.background
 
 import android.content.Context
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.stusyncteam.modeus.api.auth.ModeusSignIn
 import com.stusyncteam.modeus.api.auth.UserCredentials
 import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
 import com.stusyncteam.stusync.storage.credentials.CredentialsStorage
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 class BackgroundSyncWorker(private val context: Context, workerParams: WorkerParameters) :
-    Worker(context, workerParams) {
-    override fun doWork(): Result {
+    CoroutineWorker(context, workerParams) {
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        // TODO remove duplicate code of manual sync
         val credentialsStorage = CredentialsStorage(context)
 
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                val credentials: UserCredentials? = credentialsStorage.load()
-                val session = ModeusSignIn.login(credentials!!)
+        val credentials: UserCredentials = credentialsStorage.load()
+            ?: return@withContext Result.failure()
 
-                val self = session.getMyself()
-                val events = session.getPersonEvents(self)
+        val session = ModeusSignIn.login(credentials)
 
-                val googleCalendar = GoogleCalendarFacade.fromContext(context)
-                googleCalendar.updateCalendar(events)
-            }
-        }
+        val self = session.getMyself()
+        val events = session.getPersonEvents(self)
 
-        return Result.success()
+        val googleCalendar = GoogleCalendarFacade.fromContext(context)
+        googleCalendar.updateCalendar(events)
+
+        return@withContext Result.success()
     }
 
     companion object {
