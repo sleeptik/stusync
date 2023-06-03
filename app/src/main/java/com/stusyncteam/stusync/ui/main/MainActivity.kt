@@ -17,6 +17,7 @@ import com.stusyncteam.modeus.ModeusSession
 import com.stusyncteam.modeus.api.auth.ModeusSignIn
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
+import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
 import com.stusyncteam.stusync.storage.credentials.CredentialsStorage
 import com.stusyncteam.stusync.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -28,9 +29,9 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
     private var consentLauncher: ActivityResultLauncher<Intent>
     private var openSettingsLauncher: ActivityResultLauncher<Intent>
-    private lateinit var tvCreated: MaterialTextView
-    private lateinit var tvEdited: MaterialTextView
-    private lateinit var tvDeleted: MaterialTextView
+
+    private lateinit var binding: ActivitySettingsBinding
+    private val syncViewModel = SyncStatsViewModel()
 
     private lateinit var modeusSession: ModeusSession
 
@@ -52,9 +53,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        tvCreated = findViewById(R.id.tv_last_sync_created)
-        tvEdited = findViewById(R.id.tv_last_sync_modified)
-        tvDeleted = findViewById(R.id.tv_last_sync_deleted)
 
         runBlocking {
             withContext(Dispatchers.IO) {
@@ -68,8 +66,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_manual_sync).setOnClickListener {
-            lateinit var pairCounts: Pair<Int,Int>
-            var countCreate : Int = 0
             it.isEnabled = false
             lifecycleScope.launch(handleRequestExecutionWithAuth())
             {
@@ -79,16 +75,9 @@ class MainActivity : AppCompatActivity() {
                     val self = modeusSession.getMyself()
                     val events = modeusSession.getPersonEvents(self).toMutableList()
 
-                    val googleEvents = googleCalendar.getGoogleEvents()
-                    pairCounts = googleCalendar.editAndDeleteEvents(events,googleEvents)
-                    val requests = googleCalendar.prepareRequests(events,googleEvents)
-                    countCreate = requests.size
-                    googleCalendar.executeAll(requests)
+                    googleCalendar.updateCalendar(events)
                 }
                 it.isEnabled = true
-                tvCreated.text = "Created: ${countCreate}"
-                tvEdited.text = "Modified: ${pairCounts.first}"
-                tvDeleted.text = "Deleted: ${pairCounts.second}"
             }
         }
     }
