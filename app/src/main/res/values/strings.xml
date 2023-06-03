@@ -17,6 +17,8 @@
     <string name="tv_sync_settings">Sync settings</string>
     <string name="tv_sync_frequency">Sync frequency</string>
     <string name="sw_auto_sync">Enable automatic synchronization</string>
+    <string name="et_modeus_login_hint">Login</string>
+    <string name="et_modeus_password_hint">Password</string>
     <string-array name="sync_frequency">
         <item>Every 12 hours</item>
         <item>Every day</item>

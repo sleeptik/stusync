@@ -22,4 +22,6 @@
         <item>Раз в 3 дня</item>
         <item>Раз в неделю</item>
     </string-array>
+    <string name="et_modeus_login_hint">Логин</string>
+    <string name="et_modeus_password_hint">Пароль</string>
 </resources>
