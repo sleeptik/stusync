@@ -45,6 +45,10 @@ internal class EventRepository {
         val eventAttendeesJson = embedded["event-attendees"].asJsonArray
         val personsJson = embedded["persons"].asJsonArray
         val cycleRealizationsJson = embedded["cycle-realizations"].asJsonArray
+        val eventLocations = embedded["event-locations"].asJsonArray
+        val eventRooms = embedded["event-rooms"].asJsonArray
+        val rooms = embedded["rooms"].asJsonArray
+
 
         val events = eventsJson
             .map { element -> element.asJsonObject }
@@ -52,8 +56,8 @@ internal class EventRepository {
                 ModeusEvent(
                     UUID.fromString(it["id"].asString),
                     getEventCourseName(it, coursesJson),
-                    "Building not set",
-                    "Classroom not set",
+                    getBuilding(it,eventLocations,eventRooms,rooms),
+                    getClassroom(it,eventLocations,eventRooms,rooms),
                     getEventLessonType(it, cycleRealizationsJson),
                     DateTimeUtils.stringToDate(it["start"].asString),
                     DateTimeUtils.stringToDate(it["end"].asString),
@@ -111,6 +115,32 @@ internal class EventRepository {
         val lessonType = cycleRealizations.first { it.asJsonObject["id"].asString == lessonTypeId }
 
         return lessonType.asJsonObject["name"].asString
+    }
+
+    private fun getClassroom(event: JsonObject,eventLocations: JsonArray,eventRooms:JsonArray,rooms:JsonArray): String {
+        val eventLocationId= event["id"].asString
+        val customLocation=eventLocations.first{it.asJsonObject["eventId"].asString==eventLocationId }.asJsonObject["customLocation"]
+        if (!customLocation.isJsonNull)
+            return " "
+        else {
+            val eventRoomId = eventLocations.first{it.asJsonObject["eventId"].asString==eventLocationId }.asJsonObject["_links"].asJsonObject["event-rooms"].asJsonObject["href"].asString.substring(1)
+            val roomId = eventRooms.first{it.asJsonObject["id"].asString==eventRoomId}.asJsonObject["_links"].asJsonObject["room"].asJsonObject["href"].asString.substring(1)
+            val room = rooms.first{it.asJsonObject["id"].asString==roomId}.asJsonObject
+            return "Аудитория ".plus(room["name"].asString.substringBefore("("))
+        }
+    }
+
+    private fun getBuilding(event: JsonObject,eventLocations: JsonArray,eventRooms:JsonArray,rooms:JsonArray): String {
+        val eventLocationId= event["id"].asString
+        val customLocation=eventLocations.first{it.asJsonObject["eventId"].asString==eventLocationId }.asJsonObject["customLocation"]
+        if (!customLocation.isJsonNull)
+            return customLocation.asString
+        else {
+            val eventRoomId = eventLocations.first{it.asJsonObject["eventId"].asString==eventLocationId }.asJsonObject["_links"].asJsonObject["event-rooms"].asJsonObject["href"].asString.substring(1)
+            val roomId = eventRooms.first{it.asJsonObject["id"].asString==eventRoomId}.asJsonObject["_links"].asJsonObject["room"].asJsonObject["href"].asString.substring(1)
+            val building = rooms.first{it.asJsonObject["id"].asString==roomId}.asJsonObject["building"].asJsonObject
+            return building["name"].asString.plus(" - ").plus(building["address"].asString)
+        }
     }
 }
 

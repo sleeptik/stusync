@@ -68,7 +68,8 @@ class GoogleEventFactory {
 
         fun setDescription(): GoogleEventBuilder {
             val description = StringBuilder()
-                .appendLine("${modeusEvent.building} ${modeusEvent.classroom}")
+                .appendLine("${modeusEvent.building}")
+                .appendLine("${modeusEvent.classroom}")
 
             if (importSettings.shouldImportLessonType)
                 description.appendLine(modeusEvent.lessonType)
