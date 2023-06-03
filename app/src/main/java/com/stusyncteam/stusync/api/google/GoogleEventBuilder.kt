@@ -1,54 +1,95 @@
 package com.stusyncteam.stusync.api.google
 
+import android.content.Context
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.Event.Reminders
 import com.google.api.services.calendar.model.EventDateTime
 import com.google.api.services.calendar.model.EventReminder
 import com.stusyncteam.modeus.api.models.ModeusEvent
+import com.stusyncteam.stusync.storage.settings.ImportSettings
+import com.stusyncteam.stusync.storage.settings.ImportSettingsStorage
+import com.stusyncteam.stusync.storage.settings.NotificationSettings
+import com.stusyncteam.stusync.storage.settings.NotificationSettingsStorage
+import kotlinx.coroutines.runBlocking
 
-class GoogleEventBuilder(private val modeusEvent: ModeusEvent) {
+
+class GoogleEventFactory {
     companion object {
         const val MODEUS_UUID_PREFIX = "modeus-"
+
+        fun create(context: Context, modeusEvent: ModeusEvent): Event {
+            val importSettings = runBlocking {
+                ImportSettingsStorage(context).load() ?: ImportSettings()
+            }
+            val notificationSettings = runBlocking {
+                NotificationSettingsStorage(context).load() ?: NotificationSettings()
+            }
+
+            val builder = GoogleEventBuilder(modeusEvent, importSettings)
+                .setSummary()
+                .setDescription()
+                .setDates()
+
+            if (notificationSettings.shouldNotifyBeforeNextLessonStarts)
+                builder.setReminders()
+
+            return builder.event
+        }
     }
 
-    val event: Event = Event()
+    private class GoogleEventBuilder(
+        private val modeusEvent: ModeusEvent,
+        private val importSettings: ImportSettings,
+    ) {
+        val event: Event = Event()
 
-    fun setDefaultReminders(): GoogleEventBuilder {
-        val reminders = listOf(
-            EventReminder().setMethod("popup").setMinutes(10),
-            EventReminder().setMethod("popup").setMinutes(30)
-        )
+        fun setReminders(): GoogleEventBuilder {
+            val remindersOverrides = listOf(
+                EventReminder().setMethod("popup").setMinutes(15),
+                EventReminder().setMethod("popup").setMinutes(105)
+            )
 
-        event.reminders = Reminders()
-            .setUseDefault(false)
-            .setOverrides(reminders)
+            event.reminders = Reminders()
+                .setUseDefault(false)
+                .setOverrides(remindersOverrides)
 
-        return this
-    }
+            return this
+        }
 
-    fun setDefaultDescription(): GoogleEventBuilder {
-        val description = StringBuilder()
-            .appendLine("${modeusEvent.building} ${modeusEvent.classroom} ${modeusEvent.teacher} ${modeusEvent.lessonType}")
-            .appendLine()
-            .appendLine("${MODEUS_UUID_PREFIX}${modeusEvent.id}")
-            .toString()
+        fun setDescription(): GoogleEventBuilder {
+            val description = StringBuilder()
+                .appendLine("${modeusEvent.building} ${modeusEvent.classroom}")
 
-        event.description = description
+            if (importSettings.shouldImportLessonType)
+                description.appendLine(modeusEvent.lessonType)
 
-        return this
-    }
+            if (importSettings.shouldImportTeacherName) {
+                description.appendLine()
+                description.appendLine("Teachers") //TODO localize
+                modeusEvent.teachers.forEach { description.appendLine(it.fullName) }
+            }
 
-    fun setDefaultDates(): GoogleEventBuilder {
-        event.start = EventDateTime().setDateTime(DateTime(modeusEvent.start))
-        event.end = EventDateTime().setDateTime(DateTime(modeusEvent.end))
+            description
+                .appendLine()
+                .appendLine("${MODEUS_UUID_PREFIX}${modeusEvent.id}")
 
-        return this
-    }
+            event.description = description.toString()
 
-    fun setDefaultSummary(): GoogleEventBuilder {
-        event.summary = modeusEvent.name
+            return this
+        }
 
-        return this
+        fun setDates(): GoogleEventBuilder {
+            event.start = EventDateTime().setDateTime(DateTime(modeusEvent.start))
+            event.end = EventDateTime().setDateTime(DateTime(modeusEvent.end))
+
+            return this
+        }
+
+        fun setSummary(): GoogleEventBuilder {
+            event.summary = modeusEvent.name
+
+            return this
+        }
     }
 }

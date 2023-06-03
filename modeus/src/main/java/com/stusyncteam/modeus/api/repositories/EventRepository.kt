@@ -36,15 +36,15 @@ internal class EventRepository {
     }
 
     private fun getEventsFromResponse(response: Response): List<ModeusEvent> {
-
         val jsonResponse = JsonParser.parseString(response.body!!.string()).asJsonObject
 
-        val eventsJson = jsonResponse["_embedded"].asJsonObject["events"].asJsonArray
-        val coursesJson =
-            jsonResponse["_embedded"].asJsonObject["course-unit-realizations"].asJsonArray
-        val eventAttendsJson=jsonResponse["_embedded"].asJsonObject["event-attendees"].asJsonArray
-        val teachersJson=jsonResponse["_embedded"].asJsonObject["persons"].asJsonArray
-        val cycleJson = jsonResponse["_embedded"].asJsonObject["cycle-realizations"].asJsonArray
+        val embedded = jsonResponse["_embedded"].asJsonObject
+
+        val eventsJson = embedded["events"].asJsonArray
+        val coursesJson = embedded["course-unit-realizations"].asJsonArray
+        val eventAttendeesJson = embedded["event-attendees"].asJsonArray
+        val personsJson = embedded["persons"].asJsonArray
+        val cycleRealizationsJson = embedded["cycle-realizations"].asJsonArray
 
         val events = eventsJson
             .map { element -> element.asJsonObject }
@@ -54,10 +54,10 @@ internal class EventRepository {
                     getEventCourseName(it, coursesJson),
                     "Building not set",
                     "Classroom not set",
-                    getTeacherName(it,eventAttendsJson,teachersJson),
-                    getLessonType(it,cycleJson),
+                    getEventLessonType(it, cycleRealizationsJson),
                     DateTimeUtils.stringToDate(it["start"].asString),
                     DateTimeUtils.stringToDate(it["end"].asString),
+                    getEventTeachers(it, eventAttendeesJson, personsJson),
                 )
             }
 
@@ -72,23 +72,45 @@ internal class EventRepository {
         return associatedCourse.asJsonObject["nameShort"].asString
     }
 
-    private fun getTeacherName(event: JsonObject,eventAttends: JsonArray, teachers: JsonArray): String{
-        val eventId = event["id"].asString
-        val eventAttend=eventAttends.filter{ it.asJsonObject["_links"].asJsonObject["event"].asJsonObject["href"].asString.substring(1)==eventId}
-        val teacherId = eventAttend.map{it.asJsonObject["_links"].asJsonObject["person"].asJsonObject["href"].asString.substring(1)}
-        val teacher = teachers.filter{teacherId.contains(it.asJsonObject["id"].asString )}
+    private fun getEventTeachers(
+        event: JsonObject,
+        eventAttendees: JsonArray,
+        persons: JsonArray
+    ): List<ModeusPerson> {
+        val currentEventAttendees = eventAttendees
+            .filter {
+                val links = it.asJsonObject["_links"].asJsonObject
+                val eventId = links["event"].asJsonObject["href"].asString.substring(1)
+                eventId == event["id"].asString
+            }
 
-        return teacher.map{it.asJsonObject["fullName"].asString}.joinToString(postfix=".",separator =", ")
+        val eventTeacherIds = currentEventAttendees
+            .map {
+                val links = it.asJsonObject["_links"].asJsonObject
+                links["person"].asJsonObject["href"].asString.substring(1)
+            }
+
+        val teachers = persons.filter { eventTeacherIds.contains(it.asJsonObject["id"].asString) }
+
+        return teachers
+            .map { it.asJsonObject }
+            .map {
+                ModeusPerson(
+                    UUID.fromString(it["id"].asString),
+                    it["firstName"].asString,
+                    it["lastName"].asString,
+                    it["middleName"].asString
+                )
+            }
     }
 
-    private fun getLessonType(event:JsonObject,cycle: JsonArray): String {
+    private fun getEventLessonType(event: JsonObject, cycleRealizations: JsonArray): String {
         val eventLinks = event["_links"].asJsonObject
-        val cycleId =
-            eventLinks["cycle-realization"].asJsonObject["href"].asString.substring(1)
-        val cycleRealization= cycle.first{it.asJsonObject["id"].asString==cycleId}
+        val lessonTypeId = eventLinks["cycle-realization"].asJsonObject["href"]
+            .asString.substring(1)
+        val lessonType = cycleRealizations.first { it.asJsonObject["id"].asString == lessonTypeId }
 
-        return cycleRealization.asJsonObject["name"].asString
-
+        return lessonType.asJsonObject["name"].asString
     }
 }
 
