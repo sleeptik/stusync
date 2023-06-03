@@ -10,10 +10,10 @@
     <string name="sw_should_import_lesson_type">Добавлять Тип занятия</string>
     <string name="tv_sync_frequency">Частота сихнронизации</string>
     <string name="btn_sign_in_google">Войти в Google</string>
-    <string name="tv_last_sync_date">Последняя синхронизация: 21.05.2023</string>
-    <string name="tv_last_sync_total_created">Создано: 0</string>
-    <string name="tv_last_sync_total_modified">"Изменено: 0 "</string>
-    <string name="tv_last_sync_total_deleted">Удалено: 0</string>
+    <string name="tv_last_sync_date">Последняя синхронизация: %1$s</string>
+    <string name="tv_last_sync_total_created">Создано: %1$d</string>
+    <string name="tv_last_sync_total_modified">Изменено: %1$d</string>
+    <string name="tv_last_sync_total_deleted">Удалено: %1$d</string>
     <string name="tv_sync_settings">Настройки синхронизации</string>
     <string name="sw_auto_sync">Enable automatic synchronization</string>
     <string-array name="sync_frequency">

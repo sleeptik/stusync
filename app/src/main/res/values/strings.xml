@@ -10,10 +10,10 @@
     <string name="sw_before_next_lesson">Before next lesson start</string>
     <string name="sw_should_import_teacher_full_name">Include teacher\'s Full Name</string>
     <string name="sw_should_import_lesson_type">Include lesson type</string>
-    <string name="tv_last_sync_date">Last sync: 5/21/2023</string>
-    <string name="tv_last_sync_total_created">Created: 0</string>
-    <string name="tv_last_sync_total_modified">Modified: 0</string>
-    <string name="tv_last_sync_total_deleted">Deleted: 0</string>
+    <string name="tv_last_sync_date">Last sync: %1$s</string>
+    <string name="tv_last_sync_total_created">Created: %1$d</string>
+    <string name="tv_last_sync_total_modified">Modified: %1$d</string>
+    <string name="tv_last_sync_total_deleted">Deleted: %1$d</string>
     <string name="tv_sync_settings">Sync settings</string>
     <string name="tv_sync_frequency">Sync frequency</string>
     <string name="sw_auto_sync">Enable automatic synchronization</string>

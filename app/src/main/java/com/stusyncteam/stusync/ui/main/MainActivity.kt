@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
@@ -19,11 +20,13 @@ import com.stusyncteam.modeus.api.auth.ModeusSignIn
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
 import com.stusyncteam.stusync.background.AutoSyncWorkScheduler
-import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
+import com.stusyncteam.stusync.databinding.ActivityMainBinding
 import com.stusyncteam.stusync.permissions.PermissionRequester
 import com.stusyncteam.stusync.storage.credentials.CredentialsStorage
 import com.stusyncteam.stusync.storage.settings.AutoSyncSettings
 import com.stusyncteam.stusync.storage.settings.AutoSyncSettingsStorage
+import com.stusyncteam.stusync.storage.stats.SyncStats
+import com.stusyncteam.stusync.storage.stats.SyncStatsStorage
 import com.stusyncteam.stusync.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +35,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: ActivityMainBinding
 
     private var consentLauncher: ActivityResultLauncher<Intent>
     private var openSettingsLauncher: ActivityResultLauncher<Intent>
@@ -59,7 +62,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.lifecycleOwner = this
+
+        runBlocking {
+            val syncStats = SyncStatsStorage(this@MainActivity).load() ?: SyncStats()
+            syncViewModel.syncStats.value = syncStats
+            binding.stats = syncViewModel
+        }
 
         runBlocking {
             withContext(Dispatchers.IO) {
@@ -86,6 +96,9 @@ class MainActivity : AppCompatActivity() {
 
                     googleCalendar.updateCalendar(events)
                 }
+                val syncStats = SyncStatsStorage(this@MainActivity).load() ?: SyncStats()
+                syncViewModel.syncStats.value = syncStats
+
                 it.isEnabled = true
             }
         }

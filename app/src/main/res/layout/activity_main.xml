@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="syncStats"
+            name="stats"
             type="com.stusyncteam.stusync.ui.main.SyncStatsViewModel" />
     </data>
 
@@ -28,7 +28,7 @@
                 android:id="@+id/tv_last_sync"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_last_sync_date"
+                android:text="@{@string/tv_last_sync_date(stats.syncStats.lastSync.toString())}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +37,7 @@
                 android:id="@+id/tv_last_sync_created"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_last_sync_total_created"
+                android:text="@{@string/tv_last_sync_total_created(stats.syncStats.totalCreatedEvents)}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_last_sync" />
@@ -46,7 +46,7 @@
                 android:id="@+id/tv_last_sync_modified"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_last_sync_total_modified"
+                android:text="@{@string/tv_last_sync_total_modified(stats.syncStats.totalModifiedEvents)}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_last_sync_created" />
@@ -55,7 +55,7 @@
                 android:id="@+id/tv_last_sync_deleted"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_last_sync_total_deleted"
+                android:text="@{@string/tv_last_sync_total_deleted(stats.syncStats.totalDeletedEvents)}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_last_sync_modified" />
