@@ -22,6 +22,8 @@ import com.stusyncteam.stusync.background.AutoSyncWorkScheduler
 import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
 import com.stusyncteam.stusync.permissions.PermissionRequester
 import com.stusyncteam.stusync.storage.credentials.CredentialsStorage
+import com.stusyncteam.stusync.storage.settings.AutoSyncSettings
+import com.stusyncteam.stusync.storage.settings.AutoSyncSettingsStorage
 import com.stusyncteam.stusync.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -30,10 +32,12 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySettingsBinding
+
     private var consentLauncher: ActivityResultLauncher<Intent>
     private var openSettingsLauncher: ActivityResultLauncher<Intent>
 
-    private lateinit var binding: ActivitySettingsBinding
+    private val autoSyncSettingsStorage = AutoSyncSettingsStorage(this)
     private val syncViewModel = SyncStatsViewModel()
 
     private lateinit var modeusSession: ModeusSession
@@ -86,14 +90,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         val autoSyncSwitch = findViewById<CompoundButton>(R.id.sw_auto_sync)
-        autoSyncSwitch.isChecked = true
+        autoSyncSwitch.isChecked = loadAutoSyncSettings().isEnabled
         autoSyncSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
+            if (isChecked) {
                 AutoSyncWorkScheduler.scheduleAutoSync(this)
-            else
+            } else {
                 AutoSyncWorkScheduler.disableAutoSync(this)
+            }
+
+            val autoSyncSettings = loadAutoSyncSettings().also { it.isEnabled = isChecked }
+            saveAutoSyncSettings(autoSyncSettings)
+        }
+    }
+
+    private fun saveAutoSyncSettings(autoSyncSettings: AutoSyncSettings) {
+        runBlocking {
+            autoSyncSettingsStorage.save(autoSyncSettings)
+        }
+    }
+
+    private fun loadAutoSyncSettings(): AutoSyncSettings {
+        return runBlocking {
+            autoSyncSettingsStorage.load() ?: AutoSyncSettings()
         }
     }
 
