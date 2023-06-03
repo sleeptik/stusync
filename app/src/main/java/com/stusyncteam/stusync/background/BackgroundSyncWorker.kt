@@ -30,8 +30,7 @@ class BackgroundSyncWorker(private val context: Context, workerParams: WorkerPar
                 val events = session.getPersonEvents(self)
 
                 val googleCalendar = GoogleCalendarFacade.fromContext(context)
-                val requests = googleCalendar.prepareRequests(events)
-                googleCalendar.executeAll(requests)
+                googleCalendar.updateCalendar(events)
             }
         }
 
@@ -45,7 +44,10 @@ class BackgroundSyncWorker(private val context: Context, workerParams: WorkerPar
                 .setRequiresBatteryNotLow(true)
                 .build()
 
-            return PeriodicWorkRequestBuilder<BackgroundSyncWorker>(minutesInterval, TimeUnit.MINUTES)
+            return PeriodicWorkRequestBuilder<BackgroundSyncWorker>(
+                minutesInterval,
+                TimeUnit.MINUTES
+            )
                 .setConstraints(constraints)
                 .build()
         }
