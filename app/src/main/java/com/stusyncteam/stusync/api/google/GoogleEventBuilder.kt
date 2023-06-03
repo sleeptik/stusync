@@ -33,6 +33,8 @@ class GoogleEventFactory {
 
             if (notificationSettings.shouldNotifyBeforeNextLessonStarts)
                 builder.setReminders()
+            else
+                builder.removeReminders()
 
             return builder.event
         }
@@ -53,6 +55,13 @@ class GoogleEventFactory {
             event.reminders = Reminders()
                 .setUseDefault(false)
                 .setOverrides(remindersOverrides)
+
+            return this
+        }
+
+        fun removeReminders(): GoogleEventBuilder {
+            event.reminders = Reminders()
+                .setUseDefault(false)
 
             return this
         }
