@@ -8,6 +8,8 @@ data class ModeusEvent(
     val name: String,
     val building: String,
     val classroom: String,
+    val lessonType: String,
     val start: Date,
-    val end: Date
+    val end: Date,
+    val teachers: Collection<ModeusPerson>
 )

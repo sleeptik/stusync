@@ -18,7 +18,10 @@ import java.util.Collections
 import java.util.Date
 
 
-class GoogleCalendarFacade private constructor(private val calendar: Calendar, context: Context) {
+class GoogleCalendarFacade private constructor(
+    private val calendar: Calendar,
+    private val context: Context
+) {
     companion object {
         private const val APPLICATION_NAME = "stusync"
         private const val CALENDAR_ID = "primary"
@@ -73,7 +76,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
 
     private fun isModeusEvent(event: Event): Boolean {
         return !event.description.isNullOrEmpty()
-                && event.description.contains(GoogleEventBuilder.MODEUS_UUID_PREFIX)
+                && event.description.contains(GoogleEventFactory.MODEUS_UUID_PREFIX)
     }
 
     private fun getUpdateRequests(
@@ -85,12 +88,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
 
         return existingEvents.map { event: Event ->
             val modeusEvent = modeusEvents.first { event.description.contains(it.id.toString()) }
-            val updatedEvent = GoogleEventBuilder(modeusEvent)
-                .setDefaultSummary()
-                .setDefaultDescription()
-                .setDefaultReminders()
-                .setDefaultDates()
-                .event
+            val updatedEvent = GoogleEventFactory.create(context, modeusEvent)
             calendar.events().update(CALENDAR_ID, event.id, updatedEvent)
         }
     }
@@ -113,14 +111,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
             .filter { modeusEvent -> googleEvents.none { it.description.contains(modeusEvent.id.toString()) } }
 
         return eventsToCreate
-            .map {
-                GoogleEventBuilder(it)
-                    .setDefaultSummary()
-                    .setDefaultDescription()
-                    .setDefaultReminders()
-                    .setDefaultDates()
-                    .event
-            }
+            .map { GoogleEventFactory.create(context, it) }
             .map { calendar.events().insert(CALENDAR_ID, it) }
     }
 
