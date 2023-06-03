@@ -9,7 +9,7 @@ import com.stusyncteam.modeus.api.models.ModeusEvent
 
 class GoogleEventBuilder(private val modeusEvent: ModeusEvent) {
     companion object {
-         const val modeusUuidPrefix = "modeus-"
+        const val MODEUS_UUID_PREFIX = "modeus-"
     }
 
     val event: Event = Event()
@@ -31,7 +31,7 @@ class GoogleEventBuilder(private val modeusEvent: ModeusEvent) {
         val description = StringBuilder()
             .appendLine("${modeusEvent.building} ${modeusEvent.classroom}")
             .appendLine()
-            .appendLine("${modeusUuidPrefix}${modeusEvent.id}")
+            .appendLine("${MODEUS_UUID_PREFIX}${modeusEvent.id}")
             .toString()
 
         event.description = description

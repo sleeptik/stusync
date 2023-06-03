@@ -20,8 +20,8 @@ import java.util.Date
 
 class GoogleCalendarFacade private constructor(private val calendar: Calendar, context: Context) {
     companion object {
-        private const val applicationName = "stusync"
-        private const val calendarId = "primary"
+        private const val APPLICATION_NAME = "stusync"
+        private const val CALENDAR_ID = "primary"
 
         fun fromContext(context: Context): GoogleCalendarFacade {
             val scopes = Collections.singleton(CalendarScopes.CALENDAR)
@@ -34,14 +34,14 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
             val transport = GoogleNetHttpTransport.newTrustedTransport()
             val jsonFactory = GsonFactory.getDefaultInstance()
             val calendar = Calendar.Builder(transport, jsonFactory, credential)
-                .setApplicationName(applicationName)
+                .setApplicationName(APPLICATION_NAME)
                 .build()
 
             return GoogleCalendarFacade(calendar, context)
         }
     }
 
-    private val SyncStatsStorage = SyncStatsStorage(context)
+    private val syncStatsStorage = SyncStatsStorage(context)
 
     suspend fun updateCalendar(modeusEvents: List<ModeusEvent>) = withContext(Dispatchers.IO) {
         val googleEvents = getGoogleEvents()
@@ -53,7 +53,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
         val requests = updateRequests.plus(deleteRequests).plus(insertRequests)
         executeAll(requests)
 
-        val syncStats = SyncStatsStorage.load() ?: SyncStats()
+        val syncStats = syncStatsStorage.load() ?: SyncStats()
 
         syncStats.apply {
             lastSync = Date()
@@ -62,18 +62,18 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
             totalCreatedEvents = insertRequests.size
         }
 
-        SyncStatsStorage.save(syncStats)
+        syncStatsStorage.save(syncStats)
     }
 
     private fun getGoogleEvents(): List<Event> {
-        return calendar.events().list(calendarId).execute().items
+        return calendar.events().list(CALENDAR_ID).execute().items
             .filter { isModeusEvent(it) }
             .toList()
     }
 
     private fun isModeusEvent(event: Event): Boolean {
         return !event.description.isNullOrEmpty()
-                && event.description.contains(GoogleEventBuilder.modeusUuidPrefix)
+                && event.description.contains(GoogleEventBuilder.MODEUS_UUID_PREFIX)
     }
 
     private fun getUpdateRequests(
@@ -91,7 +91,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
                 .setDefaultReminders()
                 .setDefaultDates()
                 .event
-            calendar.events().update(calendarId, event.id, updatedEvent)
+            calendar.events().update(CALENDAR_ID, event.id, updatedEvent)
         }
     }
 
@@ -102,7 +102,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
         val eventsToDelete = googleEvents
             .filter { event -> modeusEvents.none { event.description.contains(it.id.toString()) } }
 
-        return eventsToDelete.map { calendar.events().delete(calendarId, it.id) }
+        return eventsToDelete.map { calendar.events().delete(CALENDAR_ID, it.id) }
     }
 
     private fun getInsertRequests(
@@ -121,7 +121,7 @@ class GoogleCalendarFacade private constructor(private val calendar: Calendar, c
                     .setDefaultDates()
                     .event
             }
-            .map { calendar.events().insert(calendarId, it) }
+            .map { calendar.events().insert(CALENDAR_ID, it) }
     }
 
     private fun executeAll(requests: Collection<CalendarRequest<*>>) {

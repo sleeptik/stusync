@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 class BackgroundSyncWorker(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        // TODO remove duplicate code of manual sync
         val credentialsStorage = CredentialsStorage(context)
 
         val credentials: UserCredentials = credentialsStorage.load()
@@ -26,6 +25,7 @@ class BackgroundSyncWorker(private val context: Context, workerParams: WorkerPar
 
         val session = ModeusSignIn.login(credentials)
 
+        // TODO this code duplicates for manual sync
         val self = session.getMyself()
         val events = session.getPersonEvents(self)
 
