@@ -117,6 +117,7 @@ internal class EventRepository {
         return lessonType.asJsonObject["name"].asString
     }
 
+    // TODO clean up later
     private fun getClassroom(event: JsonObject,eventLocations: JsonArray,eventRooms:JsonArray,rooms:JsonArray): String {
         val eventLocationId= event["id"].asString
         val customLocation=eventLocations.first{it.asJsonObject["eventId"].asString==eventLocationId }.asJsonObject["customLocation"]
@@ -130,6 +131,7 @@ internal class EventRepository {
         }
     }
 
+    // TODO clean up later
     private fun getBuilding(event: JsonObject,eventLocations: JsonArray,eventRooms:JsonArray,rooms:JsonArray): String {
         val eventLocationId= event["id"].asString
         val customLocation=eventLocations.first{it.asJsonObject["eventId"].asString==eventLocationId }.asJsonObject["customLocation"]
