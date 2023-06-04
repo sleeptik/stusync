@@ -56,7 +56,7 @@ class ModeusLoginActivity : AppCompatActivity(), OnLoginFinished {
         }
     }
 
-    private fun loadCredentials(): UserCredentials? {
+    private fun loadCredentials(): UserCredentials {
         return runBlocking {
             withContext(Dispatchers.IO) {
                 storage.load()

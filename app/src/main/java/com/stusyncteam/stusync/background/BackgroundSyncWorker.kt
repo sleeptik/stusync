@@ -21,9 +21,15 @@ class BackgroundSyncWorker(private val context: Context, workerParams: WorkerPar
         val credentialsStorage = CredentialsStorage(context)
 
         val credentials: UserCredentials = credentialsStorage.load()
-            ?: return@withContext Result.failure()
 
-        val session = ModeusSignIn.login(credentials)
+        val result = kotlin.runCatching {
+            ModeusSignIn.login(credentials)
+        }
+
+        if (result.isFailure)
+            return@withContext Result.failure()
+
+        val session = result.getOrNull()!!
 
         // TODO this code duplicates for manual sync
         val self = session.getMyself()

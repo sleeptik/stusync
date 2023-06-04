@@ -13,4 +13,8 @@ class NotificationSettingsStorage(context: Context) : Storage<NotificationSettin
     override fun getJavaClass(): Class<NotificationSettings> {
         return NotificationSettings::class.java
     }
+
+    override fun getDefaultInstance(): NotificationSettings {
+        return NotificationSettings()
+    }
 }

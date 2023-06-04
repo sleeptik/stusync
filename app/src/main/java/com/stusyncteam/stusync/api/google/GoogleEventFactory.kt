@@ -20,10 +20,10 @@ class GoogleEventFactory {
 
         fun create(context: Context, modeusEvent: ModeusEvent): Event {
             val importSettings = runBlocking {
-                ImportSettingsStorage(context).load() ?: ImportSettings()
+                ImportSettingsStorage(context).load()
             }
             val notificationSettings = runBlocking {
-                NotificationSettingsStorage(context).load() ?: NotificationSettings()
+                NotificationSettingsStorage(context).load()
             }
 
             val builder = GoogleEventBuilder(modeusEvent, importSettings)

@@ -13,4 +13,8 @@ class SyncStatsStorage(context: Context) : Storage<SyncStats>(context) {
     override fun getJavaClass(): Class<SyncStats> {
         return SyncStats::class.java
     }
+
+    override fun getDefaultInstance(): SyncStats {
+        return SyncStats()
+    }
 }

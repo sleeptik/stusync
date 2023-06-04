@@ -13,4 +13,8 @@ class AutoSyncSettingsStorage(context: Context) : Storage<AutoSyncSettings>(cont
     override fun getJavaClass(): Class<AutoSyncSettings> {
         return AutoSyncSettings::class.java
     }
+
+    override fun getDefaultInstance(): AutoSyncSettings {
+        return AutoSyncSettings()
+    }
 }

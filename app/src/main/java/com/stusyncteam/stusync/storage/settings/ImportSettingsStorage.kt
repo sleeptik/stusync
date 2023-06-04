@@ -13,4 +13,8 @@ class ImportSettingsStorage(context: Context) : Storage<ImportSettings>(context)
     override fun getJavaClass(): Class<ImportSettings> {
         return ImportSettings::class.java
     }
+
+    override fun getDefaultInstance(): ImportSettings {
+        return ImportSettings()
+    }
 }

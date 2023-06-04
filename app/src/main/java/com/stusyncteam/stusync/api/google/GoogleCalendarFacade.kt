@@ -56,7 +56,7 @@ class GoogleCalendarFacade private constructor(
         val requests = updateRequests.plus(deleteRequests).plus(insertRequests)
         executeAll(requests)
 
-        val syncStats = syncStatsStorage.load() ?: SyncStats()
+        val syncStats = syncStatsStorage.load()
 
         syncStats.apply {
             lastSync = Date()

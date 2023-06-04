@@ -14,4 +14,8 @@ class CredentialsStorage(context: Context) : Storage<UserCredentials>(context) {
     override fun getJavaClass(): Class<UserCredentials> {
         return UserCredentials::class.java
     }
+
+    override fun getDefaultInstance(): UserCredentials {
+        throw Exception()
+    }
 }

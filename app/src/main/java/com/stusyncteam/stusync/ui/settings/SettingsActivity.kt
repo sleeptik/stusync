@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
-import com.stusyncteam.stusync.storage.settings.ImportSettings
 import com.stusyncteam.stusync.storage.settings.ImportSettingsStorage
-import com.stusyncteam.stusync.storage.settings.NotificationSettings
 import com.stusyncteam.stusync.storage.settings.NotificationSettingsStorage
 import kotlinx.coroutines.runBlocking
 
@@ -23,8 +21,8 @@ class SettingsActivity : AppCompatActivity() {
 
         runBlocking {
             settingsViewModel.apply {
-                importSettings.value = importSettingsStorage.load() ?: ImportSettings()
-                notificationSettings.value = notificationSettingsStorage.load() ?: NotificationSettings()
+                importSettings.value = importSettingsStorage.load()
+                notificationSettings.value = notificationSettingsStorage.load()
             }
         }
 

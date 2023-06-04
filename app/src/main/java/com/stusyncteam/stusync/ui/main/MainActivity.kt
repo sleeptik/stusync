@@ -17,9 +17,7 @@ import com.stusyncteam.stusync.api.google.GoogleCalendarFacade
 import com.stusyncteam.stusync.background.AutoSyncWorkScheduler
 import com.stusyncteam.stusync.databinding.ActivityMainBinding
 import com.stusyncteam.stusync.storage.credentials.CredentialsStorage
-import com.stusyncteam.stusync.storage.settings.AutoSyncSettings
 import com.stusyncteam.stusync.storage.settings.AutoSyncSettingsStorage
-import com.stusyncteam.stusync.storage.stats.SyncStats
 import com.stusyncteam.stusync.storage.stats.SyncStatsStorage
 import com.stusyncteam.stusync.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -99,22 +97,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun getNewModeusSession(): ModeusSession = withContext(Dispatchers.IO) {
-        val credentials = CredentialsStorage(this@MainActivity).load()!!
+        val credentials = CredentialsStorage(this@MainActivity).load()
         return@withContext ModeusSignIn.login(credentials)
     }
 
     private suspend fun refreshSyncStats() {
-        syncStatsViewModel.syncStats.value = SyncStatsStorage(this).load() ?: SyncStats()
+        syncStatsViewModel.syncStats.value = SyncStatsStorage(this).load()
     }
 
     private suspend fun getAutoSyncState(): Boolean {
-        val settings = AutoSyncSettingsStorage(this).load() ?: AutoSyncSettings()
+        val settings = AutoSyncSettingsStorage(this).load()
         return settings.isEnabled
     }
 
     private suspend fun setAutoSyncState(isEnabled: Boolean) {
         val storage = AutoSyncSettingsStorage(this)
-        val settings = storage.load() ?: AutoSyncSettings()
+        val settings = storage.load()
         settings.isEnabled = isEnabled
         storage.save(settings)
     }

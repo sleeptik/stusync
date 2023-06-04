@@ -20,16 +20,17 @@ abstract class Storage<T>(private val context: Context) where T : Any {
         context.dataStore.edit { it[getPreferencesKey()] = json }
     }
 
-    suspend fun load(): T? {
+    suspend fun load(): T {
         val json = context.dataStore.data.map { it[getPreferencesKey()] }.firstOrNull()
 
         if (json != null) {
             return gson.fromJson(json, getJavaClass())
         }
 
-        return null
+        return getDefaultInstance()
     }
 
     protected abstract fun getPreferencesKey(): Preferences.Key<String>
     protected abstract fun getJavaClass(): Class<T>
+    protected abstract fun getDefaultInstance(): T
 }
