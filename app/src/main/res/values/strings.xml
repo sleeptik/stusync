@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">stusync</string>
+    <string name="app_name" translatable="false">StuSync</string>
     <string name="btn_manual_sync">Manual sync</string>
     <string name="btn_sign_in_google">Sign in Google</string>
     <string name="btn_sign_in_modeus">Sign in Modeus</string>
