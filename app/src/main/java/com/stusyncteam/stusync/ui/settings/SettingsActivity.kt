@@ -3,10 +3,12 @@ package com.stusyncteam.stusync.ui.settings
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.stusyncteam.stusync.R
 import com.stusyncteam.stusync.databinding.ActivitySettingsBinding
 import com.stusyncteam.stusync.storage.settings.ImportSettingsStorage
 import com.stusyncteam.stusync.storage.settings.NotificationSettingsStorage
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class SettingsActivity : AppCompatActivity() {
@@ -14,22 +16,20 @@ class SettingsActivity : AppCompatActivity() {
     private val importSettingsStorage = ImportSettingsStorage(this)
     private val notificationSettingsStorage = NotificationSettingsStorage(this)
 
-    private lateinit var binding: ActivitySettingsBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        runBlocking {
-            settingsViewModel.apply {
-                importSettings.value = importSettingsStorage.load()
-                notificationSettings.value = notificationSettingsStorage.load()
+        DataBindingUtil.setContentView<ActivitySettingsBinding>(this, R.layout.activity_settings)
+            .also {
+                lifecycleScope.launch {
+                    settingsViewModel.apply {
+                        importSettings.value = importSettingsStorage.load()
+                        notificationSettings.value = notificationSettingsStorage.load()
+                    }
+                    it.settings = settingsViewModel
+                }
+                it.lifecycleOwner = this
             }
-        }
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
-        binding.lifecycleOwner = this
-
-        binding.settings = settingsViewModel
     }
 
     override fun onPause() {
