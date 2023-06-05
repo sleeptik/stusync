@@ -19,7 +19,7 @@ import java.util.Date
             return LocalDateTime.now()
                 .withDayOfWeek(1)
                 .withTime(0, 0, 0, 0)
-                .plusWeeks(1)
+                .plusWeeks(2)
                 .toDateTime()
         }
 
