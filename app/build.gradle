@@ -66,6 +66,8 @@ dependencies {
 
     implementation project(path: ':modeus')
 
+    implementation("joda-time:joda-time:2.12.5")
+
     implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
 
     implementation 'androidx.work:work-runtime-ktx:2.8.1'

@@ -9,7 +9,6 @@ import com.google.api.services.calendar.model.EventReminder
 import com.stusyncteam.modeus.api.models.ModeusEvent
 import com.stusyncteam.stusync.storage.settings.ImportSettings
 import com.stusyncteam.stusync.storage.settings.ImportSettingsStorage
-import com.stusyncteam.stusync.storage.settings.NotificationSettings
 import com.stusyncteam.stusync.storage.settings.NotificationSettingsStorage
 import kotlinx.coroutines.runBlocking
 

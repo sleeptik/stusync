@@ -5,14 +5,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarRequest
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.stusyncteam.modeus.api.models.ModeusEvent
-import com.stusyncteam.stusync.storage.stats.SyncStats
+import com.stusyncteam.modeus.api.util.DateTimeUtils
 import com.stusyncteam.stusync.storage.stats.SyncStatsStorage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.util.Collections
 import java.util.Date
@@ -69,7 +71,11 @@ class GoogleCalendarFacade private constructor(
     }
 
     private fun getGoogleEvents(): List<Event> {
-        return calendar.events().list(CALENDAR_ID).execute().items
+        return calendar.events().list(CALENDAR_ID)
+            .setTimeMin(DateTime(DateTimeUtils.getSyncStartDate().toDate()))
+            .setTimeMax(DateTime(DateTimeUtils.getSyncEndDate().toDate()))
+            .setMaxResults(250)
+            .execute().items
             .filter { isModeusEvent(it) }
             .toList()
     }
@@ -115,9 +121,11 @@ class GoogleCalendarFacade private constructor(
             .map { calendar.events().insert(CALENDAR_ID, it) }
     }
 
-    private fun executeAll(requests: Collection<CalendarRequest<*>>) {
+    private suspend fun executeAll(requests: Collection<CalendarRequest<*>>) {
         requests.forEach {
-            it.execute()
+            coroutineScope {
+                it.execute()
+            }
         }
     }
 }

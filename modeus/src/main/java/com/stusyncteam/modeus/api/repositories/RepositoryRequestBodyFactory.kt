@@ -8,7 +8,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
-internal class RepositoryRequestBodyFactory {
+internal class      RepositoryRequestBodyFactory {
     companion object {
         fun createSearchPersonRequestBody(fullName: String): RequestBody {
             val jsonObject = JsonObject()
@@ -23,8 +23,8 @@ internal class RepositoryRequestBodyFactory {
         }
 
         fun createGetEventsRequestBody(person: ModeusPerson): RequestBody {
-            val start = DateTimeUtils.getStartOfTheWeek()
-            val end = DateTimeUtils.getEndOfTheWeek()
+            val start = DateTimeUtils.getSyncStartDate()
+            val end = DateTimeUtils.getSyncEndDate()
 
             val jsonObject = JsonObject().apply {
                 val personId = JsonArray()

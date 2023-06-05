@@ -6,16 +6,16 @@ import org.joda.time.ReadableDateTime
 import org.joda.time.format.ISODateTimeFormat
 import java.util.Date
 
-internal class DateTimeUtils {
+ class DateTimeUtils {
     companion object {
-        fun getStartOfTheWeek(): DateTime {
+        fun getSyncStartDate(): DateTime {
             return LocalDateTime.now()
                 .withDayOfWeek(1)
                 .withTime(0, 0, 0, 0)
                 .toDateTime()
         }
 
-        fun getEndOfTheWeek(): DateTime {
+        fun getSyncEndDate(): DateTime {
             return LocalDateTime.now()
                 .withDayOfWeek(1)
                 .withTime(0, 0, 0, 0)
